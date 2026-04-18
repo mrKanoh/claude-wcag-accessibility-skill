@@ -1,0 +1,28 @@
+tool,type,platform,browser,free,best_for,install,url
+axe DevTools,browser-extension,Windows/Mac/Linux,Chrome/Firefox/Edge,true (core); paid (pro),"Automated rule checking; WCAG mapping; dev workflow","Chrome Web Store / Firefox Add-ons",https://www.deque.com/axe/devtools/
+WAVE,browser-extension,Windows/Mac/Linux,Chrome/Firefox,true,"Visual overlay; heading structure; color contrast; errors and alerts","Chrome Web Store / Firefox Add-ons",https://wave.webaim.org/extension/
+Accessibility Insights,browser-extension,Windows/Mac/Linux,Edge/Chrome,true,"Guided manual audit; FastPass; Tab Stops; Color tool","Edge Add-ons / Chrome Web Store",https://accessibilityinsights.io/
+ARC Toolkit,browser-extension,Windows/Mac/Linux,Chrome,true,"WCAG-mapped findings; detailed ARIA inspection","Chrome Web Store",https://www.tpgi.com/arc-platform/arc-toolkit/
+IBM Equal Access Checker,browser-extension,Windows/Mac/Linux,Chrome/Firefox,true,"IBM accessibility checklist; CI integration","Chrome Web Store / Firefox Add-ons",https://www.ibm.com/able/toolkit/tools/
+axe-core CLI,cli,Windows/Mac/Linux,Headless (Chrome),true,"Automated scans in terminal; CI/CD pipelines","npm install -g @axe-core/cli",https://github.com/dequelabs/axe-core
+Pa11y,cli,Windows/Mac/Linux,Headless (Chrome),true,"Automated scans; threshold config; CI integration","npm install -g pa11y",https://pa11y.org/
+Lighthouse,cli/devtools,Windows/Mac/Linux,Chrome DevTools / CLI,true,"Accessibility + performance + SEO audit; score tracking","Built into Chrome DevTools; npm install -g lighthouse",https://developer.chrome.com/docs/lighthouse/
+axe-core (Jest),testing-library,Windows/Mac/Linux,Any (headless),true,"Unit/integration tests; jest-axe; zero violations assertion","npm install --save-dev jest-axe",https://github.com/nickcolley/jest-axe
+Playwright + axe,testing-library,Windows/Mac/Linux,Chromium/Firefox/WebKit,true,"E2E accessibility testing across browsers","npm install @axe-core/playwright",https://github.com/dequelabs/axe-core-npm/tree/develop/packages/playwright
+Cypress + axe,testing-library,Windows/Mac/Linux,Chrome/Firefox/Edge,true,"E2E accessibility testing in Cypress","npm install cypress-axe",https://github.com/component-driven/cypress-axe
+Storybook a11y addon,testing-library,Windows/Mac/Linux,Any,true,"Component-level accessibility checks in Storybook","npm install @storybook/addon-a11y",https://storybook.js.org/addons/@storybook/addon-a11y
+NVDA,screen-reader,Windows,Firefox (primary) / Chrome,true,"Primary Windows screen reader testing; most common AT","Download from nvaccess.org","https://www.nvaccess.org/download/"
+JAWS,screen-reader,Windows,Chrome / Edge,false (paid),"Enterprise Windows AT testing; most used in corporate","Purchase from Freedom Scientific",https://www.freedomscientific.com/products/software/jaws/
+VoiceOver,screen-reader,macOS/iOS,Safari (primary),true (built-in),"macOS and iOS screen reader testing","Built into macOS (Cmd+F5) and iOS (Settings > Accessibility)","https://support.apple.com/guide/voiceover/"
+TalkBack,screen-reader,Android,Chrome,true (built-in),"Android screen reader testing","Built into Android (Settings > Accessibility > TalkBack)","https://support.google.com/accessibility/android/answer/6283677"
+Narrator,screen-reader,Windows,Edge,true (built-in),"Windows built-in; secondary testing","Built into Windows (Win+Ctrl+Enter)","https://support.microsoft.com/en-us/windows/complete-guide-to-narrator"
+Colour Contrast Analyser,color,Windows/Mac,Desktop app (any),true,"Precise contrast ratio measurement; eyedropper tool","Download from TPGi",https://www.tpgi.com/color-contrast-checker/
+WebAIM Contrast Checker,color,Any,Web (any),true,"Quick hex/RGB contrast check; AA/AAA pass/fail","Web tool only",https://webaim.org/resources/contrastchecker/
+Chrome DevTools Contrast,color,Windows/Mac/Linux,Chrome,true,"Inline contrast check in DevTools Inspector","Built into Chrome DevTools","https://developer.chrome.com/docs/devtools/accessibility/contrast/"
+Accessibility Inspector (Xcode),mobile,macOS,iOS Simulator,true (requires Mac),"iOS accessibility property inspection; audit feature","Built into Xcode (Xcode > Open Developer Tool)","https://developer.apple.com/documentation/accessibility/accessibility-inspector"
+Google Accessibility Scanner,mobile,Android,On-device,true,"Android app accessibility suggestions; touch target size","Google Play Store",https://play.google.com/store/apps/details?id=com.google.android.apps.accessibility.auditor
+a11yTools,mobile,iOS,On-device,false (paid),"VoiceOver label inspection; contrast check on device","App Store",https://apps.apple.com/app/a11y-tools/id1157179863
+HTML_CodeSniffer,bookmarklet,Any,Any,true,"WCAG 2.1 check via bookmarklet; no extension needed","Drag to bookmarks bar from site","https://squizlabs.github.io/HTML_CodeSniffer/"
+tota11y,bookmarklet,Any,Any,true,"Visual annotations; heading outline; contrast; labels","Drag to bookmarks bar from site","https://khan.github.io/tota11y/"
+Nu HTML Validator,validator,Any,Web (any),true,"Valid HTML check; ARIA correctness","Web tool or CLI: vnu.jar",https://validator.w3.org/nu/
+AccessLint,ci,Any,GitHub Actions,true,"GitHub PR comments for accessibility violations","GitHub Action",https://accesslint.com/
