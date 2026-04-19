@@ -1161,20 +1161,78 @@ Key terms for Spanish-speaking teams:
 
 ---
 
-## 25. Resources
+## 25. Comprehensive Resource Repository
 
-- [WCAG 2.2 Quick Reference](https://www.w3.org/WAI/WCAG22/quickref/)
-- [Understanding WCAG 2.2](https://www.w3.org/WAI/WCAG22/Understanding/)
-- [WAI-ARIA Authoring Practices Guide (APG)](https://www.w3.org/WAI/ARIA/apg/)
-- [WebAIM](https://webaim.org/)
-- [The A11Y Project](https://www.a11yproject.com/)
-- [Deque axe-core](https://github.com/dequelabs/axe-core)
-- [Inclusive Components (Heydon Pickering)](https://inclusive-components.design/)
-- [React Aria (Adobe)](https://react-spectrum.adobe.com/react-aria/)
-- [Radix UI](https://www.radix-ui.com/)
-- [USWDS](https://designsystem.digital.gov/)
-- [UN Convention on the Rights of Persons with Disabilities](https://www.un.org/development/desa/disabilities/convention-on-the-rights-of-persons-with-disabilities.html)
-- [Paul J. Adam](https://pauljadam.com/)
+📚 **See [`RESOURCES.md`](./RESOURCES.md) for a complete, curated repository of:**
+- Official W3C/WAI standards & guidelines
+- Practical implementation guides (2024–2025)
+- Academic research & systematic reviews
+- Blogs, communities & education
+- Testing tools & frameworks (axe, WAVE, Lighthouse, etc.)
+- Recommended books & courses
+- Legal frameworks by jurisdiction
+- Case studies & accessible websites
+
+---
+
+## 26. Core References
+
+### Official Standards & Specifications
+
+- [WCAG 2.2 Recommendation](https://www.w3.org/TR/WCAG22/) — Official W3C standard
+- [WCAG 2.2 Quick Reference](https://www.w3.org/WAI/WCAG22/quickref/) — Filterable by level, principle
+- [Understanding WCAG 2.2](https://www.w3.org/WAI/WCAG22/Understanding/) — Detailed explanations & techniques
+- [WAI-ARIA Authoring Practices Guide (APG)](https://www.w3.org/WAI/ARIA/apg/) — 25+ component patterns with code
+- [WCAG Evaluation Methodology (WCAG-EM)](https://w3c.github.io/wai-wcag-em/) — Structured audit framework
+- [WCAG2Mobile](https://www.w3.org/WAI/mobile/) — Applying WCAG to mobile apps
+- [WCAG2ICT](https://w3c.github.io/wcag2ict/) — Applying WCAG to non-web ICT
+
+### Practical Guides (2024–2025)
+
+- [AllAccessible: WCAG 2.2 Complete Compliance Guide](https://www.allaccessible.org/blog/wcag-22-complete-guide-2025) — 9 new criteria patterns
+- [Deque: Beginner's Guide to Web Accessibility](https://www.deque.com/web-accessibility-beginners-guide/) — Entry-level foundations
+- [Usercentrics: Mastering WCAG 2.2 & Inclusive Design](https://usercentrics.com/knowledge-hub/mastering-web-app-accessibility-wcag2-2-and-inclusive-design/)
+
+### Academic Research
+
+- [Accessibility Engineering: Systematic Literature Review (152 papers)](https://pmc.ncbi.nlm.nih.gov/articles/PMC9881526/) — 2010–2021 methodologies
+- [WCAG 2.2 & ADA 2024: Policy Impact (PRISMA 2020)](https://www.researchgate.net/publication/396366120_Policy_in_Practice_A_Systematic_Review_of_WCAG_22_and_ADA_2024_Effects_on_Web_and_Mobile_Accessibility) — Regulatory compliance effects
+- [Cognitive Disabilities: Rapid Evidence Assessment](https://pmc.ncbi.nlm.nih.gov/articles/PMC8869505/) — Specific needs & WCAG gaps
+- [Web Accessibility in Universities (UK Study)](https://journals.sagepub.com/doi/full/10.1177/21582440211056614) — 349 institutions; 80% below AA
+- [How WCAG Compliance Shapes User Experience](https://www.sciencedirect.com/science/article/pii/S1071581922001756) — Evidence on real-world impact
+
+### Blogs & Communities
+
+- [WebAIM](https://webaim.org/) — 25 years of free resources, 1 monthly newsletter
+- [WebAIM Blog](https://webaim.org/blog/feed/) — Weekly updates on standards & tools
+- [The A11Y Project](https://www.a11yproject.com/) — Community, events, curriculum
+- [Inclusive Components (Heydon Pickering)](https://inclusive-components.design/) — Component patterns with inclusivity focus
+- [Paul J. Adam](https://pauljadam.com/) — Specialist in web & mobile accessibility
+- [Deque: Accessible Design Hub](https://www.deque.com/accessible-design/)
+
+### Component Libraries & Pattern Libraries
+
+- [WAI-ARIA Authoring Practices Guide (APG)](https://www.w3.org/WAI/ARIA/apg/) — 25+ patterns with live examples
+- [React Aria (Adobe)](https://react-spectrum.adobe.com/react-aria/) — Accessible React components & hooks
+- [Radix UI](https://www.radix-ui.com/) — Unstyled, accessible component library
+- [USWDS (US Web Design System)](https://designsystem.digital.gov/) — Government standards
+- [Inclusive Components](https://inclusive-components.design/) — Design-first patterns
+
+### Testing & Automation
+
+- [axe-core (Deque)](https://github.com/dequelabs/axe-core) — De facto standard automated testing engine
+- [WAVE (WebAIM)](https://wave.webaim.org/) — Visual accessibility feedback
+- [Lighthouse (Google)](https://developers.google.com/web/tools/lighthouse) — Built into Chrome
+- [pa11y](https://pa11y.org/) — CLI & CI integration
+- [jest-axe](https://github.com/nickcolley/jest-axe) — Jest + Testing Library integration
+- [@axe-core/playwright](https://github.com/dequelabs/axe-core-npm/tree/develop/packages/playwright) — Playwright integration
+- [cypress-axe](https://github.com/component-driven/cypress-axe) — Cypress integration
+
+### Human Rights & Disability Models
+
+- [UN Convention on the Rights of Persons with Disabilities (CRPD)](https://www.un.org/development/desa/disabilities/convention-on-the-rights-of-persons-with-disabilities.html) — Legal framework
+- [WHO International Classification of Functioning (ICF)](https://www.who.int/standards/classifications/international-classification-of-functioning-disability-and-health) — Biopsychosocial model
+- [Disability Models in Design (Social, Medical, Identity-First)](https://www.a11yproject.com/) — Frameworks for inclusive thinking
 
 ---
 
@@ -1195,3 +1253,4 @@ Key terms for Spanish-speaking teams:
 13. **Alternative input**: when asked about motor/cognitive accessibility, cover switch access, voice control (Voice Access / Dragon), eye tracking, and COGA — see section 21.
 14. **User preference media queries**: recommend prefers-reduced-motion, prefers-contrast, forced-colors, prefers-reduced-transparency in every animation/color/theme discussion — see section 20.
 15. **Templates & prompts**: point users to `templates/` and `prompts/` for ready-to-use assets. The prompts in `prompts/` are designed to be pasted into Claude directly.
+16. **External Resources**: refer users to [`RESOURCES.md`](./RESOURCES.md) for comprehensive curated bibliography of books, blogs, research papers, tools, and legal frameworks — updated 2025 with WCAG 2.2, EAA deadline, and peer-reviewed studies.
