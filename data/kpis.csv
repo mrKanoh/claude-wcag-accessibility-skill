@@ -1,0 +1,16 @@
+kpi,category,description,formula,target,cadence
+Axe Violations per 1k DOM Nodes,Technical,Automated violations normalized by page complexity,violations/(dom_nodes/1000),< 1.0,Per build
+WCAG AA Conformance Rate,Conformance,Percentage of audited pages passing all AA criteria,passing_pages/total_pages,100%,Quarterly
+Critical Issues Open,Remediation,Count of severity-critical a11y issues in backlog,count(severity=critical),0,Weekly
+Mean Time to Remediate (MTTR),Remediation,Average days from report to fix deployed,avg(closed_at - reported_at),< 14 days,Monthly
+Keyboard Task Completion Rate,User Outcome,% of core tasks completable without mouse in usability testing,completed/attempted,>= 95%,Per release
+Screen Reader Task Success Rate,User Outcome,% of tasks completed with NVDA/JAWS/VoiceOver,successful/attempted,>= 90%,Per release
+Contrast Failures,Visual,Elements failing 1.4.3 / 1.4.11 per scan,count(contrast_fail),0 on core flows,Per build
+Components with Known-Good Pattern,Design System,% of UI components using accessible primitives,accessible/total_components,100%,Monthly
+Accessibility Acceptance Criteria Coverage,Process,% of user stories with a11y AC before dev,stories_with_a11y_ac/total_stories,>= 90%,Sprint
+Accessibility Training Completion,Organization,% of designers/devs/QA completing a11y training,trained/total,100%,Annually
+New Regressions per Sprint,Regression,New a11y issues introduced in the last sprint,count(new_issues),Downward trend,Sprint
+User-Reported A11y Tickets,Feedback,Tickets from users with disabilities per release,count(a11y_ticket),Downward trend,Per release
+VPAT/ACR Freshness,Compliance,Days since last Accessibility Conformance Report update,today - last_acr_date,<= 180 days,Quarterly
+Focus-Visible Coverage,Visual,% of interactive elements with visible focus indicator,with_focus/total_interactive,100%,Per build
+Alt Text Presence,Perceivable,% of informative images with non-empty alt,images_with_alt/informative_images,100%,Per build

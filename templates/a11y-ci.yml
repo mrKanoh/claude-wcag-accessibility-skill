@@ -1,0 +1,240 @@
+name: Accessibility CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+permissions:
+  contents: read
+  pull-requests: write       # for PR comment on failure
+
+jobs:
+  # ── 1. Unit / component tests with jest-axe ────────────────────────────────
+  unit-a11y:
+    name: Unit accessibility (jest-axe)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run unit a11y tests
+        run: npm test -- --testPathPattern="a11y|accessibility"
+
+  # ── 2. axe-core CLI scan ──────────────────────────────────────────────────
+  axe-scan:
+    name: axe-core scan
+    runs-on: ubuntu-latest
+    needs: unit-a11y
+    services:
+      app:
+        image: node:20-alpine
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Start server
+        run: npm run start &
+        env:
+          NODE_ENV: production
+
+      - name: Wait for server
+        run: npx wait-on http://localhost:3000 --timeout 30000
+
+      - name: Install axe CLI
+        run: npm install -g @axe-core/cli
+
+      - name: Run axe scan on core pages
+        run: |
+          axe http://localhost:3000 \
+              http://localhost:3000/login \
+              http://localhost:3000/dashboard \
+              --tags wcag2a,wcag2aa,wcag22aa \
+              --reporter json \
+              --exit \
+              --stdout > axe-report.json
+        continue-on-error: true
+
+      - name: Upload axe report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: axe-report
+          path: axe-report.json
+          retention-days: 14
+
+  # ── 3. pa11y-ci scan ─────────────────────────────────────────────────────
+  pa11y-scan:
+    name: pa11y-ci scan
+    runs-on: ubuntu-latest
+    needs: unit-a11y
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Start server
+        run: npm run start &
+
+      - name: Wait for server
+        run: npx wait-on http://localhost:3000 --timeout 30000
+
+      - name: Install pa11y-ci
+        run: npm install -g pa11y-ci
+
+      # .pa11yci.json in repo root:
+      # { "standard": "WCAG2AA", "urls": ["http://localhost:3000", "..."] }
+      - name: Run pa11y-ci
+        run: pa11y-ci --config .pa11yci.json --json > pa11y-report.json
+        continue-on-error: true
+
+      - name: Upload pa11y report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: pa11y-report
+          path: pa11y-report.json
+          retention-days: 14
+
+  # ── 4. Playwright + @axe-core/playwright E2E ──────────────────────────────
+  playwright-a11y:
+    name: Playwright E2E accessibility
+    runs-on: ubuntu-latest
+    needs: unit-a11y
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium firefox
+
+      - name: Build
+        run: npm run build
+
+      - name: Run Playwright a11y tests
+        run: npx playwright test --grep @a11y
+        env:
+          BASE_URL: http://localhost:3000
+
+      - name: Upload Playwright report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 14
+
+  # ── 5. Lighthouse accessibility audit ────────────────────────────────────
+  lighthouse:
+    name: Lighthouse accessibility
+    runs-on: ubuntu-latest
+    needs: unit-a11y
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Start server
+        run: npm run start &
+
+      - name: Wait for server
+        run: npx wait-on http://localhost:3000 --timeout 30000
+
+      - name: Run Lighthouse CI
+        uses: treosh/lighthouse-ci-action@v11
+        with:
+          urls: |
+            http://localhost:3000
+            http://localhost:3000/login
+          budgetPath: .lighthouserc.json
+          uploadArtifacts: true
+          temporaryPublicStorage: true
+        env:
+          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+
+  # ── 6. Aggregate & comment on PR ────────────────────────────────────────
+  report:
+    name: Summarize & comment
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    needs: [axe-scan, pa11y-scan, playwright-a11y, lighthouse]
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: axe-report
+          path: reports/
+
+      - name: Post PR comment
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            let body = '## ♿ Accessibility CI Summary\n\n';
+            try {
+              const axe = JSON.parse(fs.readFileSync('reports/axe-report.json', 'utf8'));
+              const violations = axe.flatMap(r => r.violations || []);
+              const critical = violations.filter(v => v.impact === 'critical').length;
+              const serious  = violations.filter(v => v.impact === 'serious').length;
+              body += `| Severity | Count |\n|---|---|\n`;
+              body += `| 🔴 Critical | ${critical} |\n`;
+              body += `| 🟠 Serious  | ${serious}  |\n`;
+              body += `| Total violations | ${violations.length} |\n\n`;
+              if (violations.length === 0) body += '✅ No axe violations found.\n';
+              else body += '⚠️ Review the axe-report artifact for details.\n';
+            } catch(e) {
+              body += '_Could not parse axe report._\n';
+            }
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body
+            });
