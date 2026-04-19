@@ -1,0 +1,26 @@
+jurisdiction,law,standard_referenced,scope,enforcement,effective,notes
+United States (Federal),Section 508 of the Rehabilitation Act,WCAG 2.0 AA (Revised 508 2017),Federal agencies and contractors,Civil Rights Division / agency complaints; civil suits,Since 1998 (revised 2017),Covers ICT procurement and development
+United States (Private sector),Americans with Disabilities Act (ADA) Titles II & III,"WCAG 2.1 AA (de facto; DOJ Title II rule 2024 mandates AA)",Public accommodations and state/local government,DOJ enforcement; private lawsuits,ADA 1990; Title II WCAG 2.1 AA rule 2024 (2-3 year phase-in),Many Title III lawsuits for inaccessible websites/apps
+United States (California),Unruh Civil Rights Act / Cal. Gov. Code 11135,WCAG 2.1 AA,State agencies and public accommodations,Private right of action,Active,High volume of a11y litigation
+United States (New York),New York State Human Rights Law,WCAG 2.1 AA,State and public accommodations,State courts / AG,Active,
+European Union,European Accessibility Act (EAA) Directive 2019/882,EN 301 549 (which references WCAG 2.1 AA),B2C digital products & services (e-commerce ticketing banking e-books),Member state market surveillance,Applies 28 June 2025,Private sector consumer products; microenterprise exemption
+European Union,Web Accessibility Directive 2016/2102,EN 301 549,Public sector websites and mobile apps,Member state monitoring; accessibility statements required,In force,
+European Union (EN 301 549),EN 301 549 v3.2.1,WCAG 2.1 AA + additional mobile/hardware/authoring,ICT products and services,Referenced by EAA and WAD,Active,Harmonized standard
+United Kingdom,Equality Act 2010 + PSBAR 2018,WCAG 2.1 AA (public sector),All services incl. digital,Equality and Human Rights Commission; courts,Active,Public Sector Bodies Accessibility Regulations
+Canada (Federal),Accessible Canada Act (ACA),WCAG 2.1 AA (per CASDO standards),Federally regulated entities,Accessibility Commissioner,In force since 2019,Goal: barrier-free Canada by 2040
+Canada (Ontario),Accessibility for Ontarians with Disabilities Act (AODA),WCAG 2.0 AA,Public and large private orgs,Provincial directorate,Public sector full; private since 2021,
+Australia,Disability Discrimination Act 1992 + Digital Service Standard,WCAG 2.1 AA,Government services,Australian Human Rights Commission,Active,Federal agencies must meet AA
+Japan,JIS X 8341-3:2016,WCAG 2.0 AA (aligned),Public sector and recommended private,Met by METI guidance,Active,Updating toward WCAG 2.1
+Israel,IS 5568 / Equal Rights for Persons with Disabilities Law,WCAG 2.0 AA,Public and many private sites,Commission for Equal Rights,Active,
+Mexico,NOM-034-STPS / Ley General para la Inclusión de las Personas con Discapacidad,WCAG 2.1 AA (referenced in some states),Public sector and workplaces,CONADIS,Active,Norms evolving by state
+Chile,Ley 20.422 + Ley 21.015 + Decreto 1 (2015),WCAG 2.0 AA (sitios de gobierno),Administración del Estado,SENADIS,Active,Norma técnica obligatoria para gobierno
+Argentina,Ley 26.653,WCAG 2.0 AA (Disposición ONTI 6/2019),Administración pública nacional,ONTI / Comisión Nacional Asesora,Active,
+Brasil,Lei Brasileira de Inclusão (Lei 13.146/2015) + eMAG,WCAG 2.1 AA (eMAG alineado),Setor público e privado de uso coletivo,Ministério Público; CNJ,Active,eMAG e-Ministério da Gestão
+Colombia,Resolución 1519 de 2020 MinTIC,WCAG 2.1 AA,Entidades públicas,MinTIC,Active,
+Perú,Ley 29973 / Decreto Supremo 004-2021-MIMP,WCAG 2.1 AA,Entidades públicas,CONADIS,Active,
+España,Real Decreto 1112/2018 (transposición WAD),EN 301 549 (WCAG 2.1 AA),Sector público,OAW; Ministerio de Asuntos Económicos,Active,
+India,Rights of Persons with Disabilities Act 2016 + GIGW 3.0,WCAG 2.1 AA (GIGW),Government sites,MeitY; courts,Active,
+South Korea,Disability Discrimination Act + KWCAG 2.2,WCAG 2.1 AA aligned (KWCAG),Public and private above threshold,Ministry of Interior & Safety,Active,
+Ireland,Disability Act 2005 + EU WAD,EN 301 549,Public bodies,NDA,Active,
+Germany,BITV 2.0 + BFSG (EAA transposition),EN 301 549,Public (BITV) + private consumer products (BFSG),BfIT; Federal Network Agency,Active; BFSG 28 Jun 2025,
+France,RGAA 4 + Loi 2005-102 + Article 47,WCAG 2.1 AA via RGAA,Public sector and large companies,ARCOM; DINUM,Active,Accessibility declaration + schema required

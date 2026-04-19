@@ -1,0 +1,21 @@
+rule,category,recommendation,wcag_ref,rationale
+Minimum body size,Size,16 px / 1rem minimum for body text,1.4.4,Smaller sizes fail low-vision users and reduce readability
+Line height,Spacing,1.5x font size minimum for paragraphs,1.4.12,Dyslexia and tracking support
+Paragraph spacing,Spacing,At least 2x font size between paragraphs,1.4.12,Visual grouping and scannability
+Letter spacing,Spacing,0.12x font size supported without loss,1.4.12,Text spacing user customization
+Word spacing,Spacing,0.16x font size supported without loss,1.4.12,Readability for dyslexia and low vision
+Line length,Layout,45-75 characters per line (~65 optimal),1.4.8 AAA,Long lines cause line-tracking loss
+Text alignment,Layout,Left-align (LTR) or start-align; avoid justified,1.4.8 AAA,Justified creates rivers of whitespace
+Reflow,Responsive,Readable at 320 CSS px wide without horizontal scroll,1.4.10,Zoom and mobile usability
+Resize text,Responsive,Zoom to 200% without loss of functionality,1.4.4,Low-vision zoom support
+Contrast normal text,Contrast,4.5:1 against background,1.4.3,AA minimum
+Contrast large text,Contrast,3:1 against background (18pt or 14pt bold),1.4.3,AA large text minimum
+Avoid color only,Meaning,Do not convey info by color alone (e.g., error = red),1.4.1,Color blind users cannot perceive
+Webfonts,Technical,Use font-display swap; fallback readable,-,Avoids invisible text while loading
+Avoid all caps,Style,Do not set uppercase for long blocks,-,Screen readers may spell letters; slower reading
+Avoid thin weights,Weight,Body text >= 400 weight; avoid 100-300 for paragraphs,1.4.3,Low contrast and pixelation
+Italics sparingly,Style,Reserve for emphasis; avoid blocks of italic,-,Reduced legibility especially in dyslexia
+Accessible dyslexia choice,Face,Sans-serif or dyslexia-friendly faces (Atkinson Hyperlegible Lexend),-,Wider characters reduce confusion
+Avoid decorative for body,Face,Use decorative faces only for display headlines,-,Low legibility in long copy
+No text in images,Perceivable,Use real text not images of text except logos,1.4.5,Zoom and AT cannot handle image text
+Link text style,Links,Underline links in body copy; contrast 3:1 vs text and 4.5:1 vs background,1.4.1 / 1.4.11,Color alone insufficient for color blind

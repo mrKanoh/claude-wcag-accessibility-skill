@@ -1,0 +1,8 @@
+model,focus,view_of_disability,design_implication,example
+Medical,Individual impairment,Disability is a health condition to be treated or cured,Accommodation and assistive devices; can pathologize users,Prescription of a wheelchair or hearing aid
+Social,Society and environment,Disability is caused by barriers (physical attitudinal digital) not by impairment,Remove barriers in products and environments; universal design,Adding captions so a deaf user can access video
+Biopsychosocial (WHO ICF),Interaction of biology psychology and social context,Disability results from interaction of body functions activities participation and environment,Design must consider functional context and situational factors,Designing a form that works with low vision AND low bandwidth
+Human Rights (CRPD),Dignity and equality,Accessibility is a human right; denial of access is discrimination,Accessibility is mandatory not optional; legal compliance required,Government digital services meeting WCAG as law
+Charity,Pity and benevolence,People with disabilities need help and protection (outdated),Often leads to paternalistic design; avoid,Marketing that portrays disabled users as inspirational victims
+Economic,Labor market participation,Disability is inability to work,Focus on assistive tech for employment; limited scope,Workplace screen readers paid by employer
+Identity/Affirmative,Disability culture and pride,Disability is a valued identity and source of community,Co-design with disabled users; inclusive language,Including Deaf culture voices in video calling features

@@ -74,15 +74,49 @@ python scripts/search.py keys --reader NVDA --action heading
 
 # All VoiceOver shortcuts on macOS
 python scripts/search.py keys --reader VoiceOver --platform macOS
+
+# Semantic HTML reference
+python scripts/search.py semantic --element nav
+
+# Accessible typography rules by category
+python scripts/search.py typography --category Spacing
+
+# Color palette rules
+python scripts/search.py color --scope Non-text
+
+# Accessibility KPIs
+python scripts/search.py kpis --category Remediation
+
+# Handoff checklist by phase / owner
+python scripts/search.py handoff --phase Design --owner Designer
+
+# Models of disability
+python scripts/search.py models --keyword social
 ```
 
-| File | Rows | Contents |
-|------|------|----------|
-| `data/wcag-criteria.csv` | 46 | All WCAG 2.1 A/AA criteria · techniques · failures · W3C URLs |
-| `data/aria-patterns.csv` | 25+ | Component patterns · required ARIA · keyboard · focus management |
-| `data/testing-tools.csv` | 30+ | Tools by type · platform · browser · cost |
-| `data/screen-reader-keys.csv` | 80+ | Shortcuts for NVDA · JAWS · VoiceOver (macOS/iOS) · TalkBack · Narrator |
-| `scripts/search.py` | — | CLI search tool across all databases |
+| File | Contents |
+|------|----------|
+| `data/wcag-criteria.csv` | WCAG 2.1 A/AA + **WCAG 2.2** (2.4.11–2.4.13, 2.5.7–2.5.8, 3.2.6, 3.3.7–3.3.9) |
+| `data/aria-patterns.csv` | 25+ component patterns · ARIA · keyboard · focus mgmt |
+| `data/testing-tools.csv` | 30+ tools by type · platform · browser · cost |
+| `data/screen-reader-keys.csv` | Shortcuts for NVDA · JAWS · VoiceOver (macOS/iOS) · TalkBack · Narrator |
+| `data/semantic-html.csv` | Semantic HTML element → role → when to use / avoid |
+| `data/typography-rules.csv` | 20 accessible typography rules mapped to WCAG |
+| `data/color-palette-rules.csv` | Palette design rules (contrast, color-blindness, HCM, states) |
+| `data/kpis.csv` | 15 accessibility KPIs with formulas, targets, cadence |
+| `data/handoff-checklist.csv` | Research → Design → Dev → QA → Release handoff |
+| `data/disability-models.csv` | Medical / Social / Biopsychosocial / CRPD / Identity |
+| `data/glossary-es.csv` | Spanish ↔ English a11y glossary (70+ terms with definitions) |
+| `data/legal-framework.csv` | 25+ jurisdictions: ADA, EAA, Section 508, AODA, LGPD, and more |
+| `scripts/search.py` | CLI search across all 12 databases |
+| `templates/audit-report.md` | Fill-in audit report template |
+| `templates/a11y-ci.yml` | GitHub Actions pipeline (axe + pa11y + Playwright + Lighthouse) |
+| `prompts/audit-component.md` | Prompt: audit a UI component |
+| `prompts/sc-to-acceptance-criteria.md` | Prompt: WCAG SC → Gherkin ACs |
+| `prompts/generate-alt-text.md` | Prompt: generate alt text |
+| `prompts/review-figma-handoff.md` | Prompt: review design handoff |
+| `prompts/summarize-audit-findings.md` | Prompt: exec summary from findings |
+| `prompts/generate-aria-pattern.md` | Prompt: generate any accessible widget |
 
 ---
 
@@ -106,7 +140,22 @@ Claude loads this skill automatically when you ask things like:
 
 | Domain | Topics |
 |--------|--------|
-| **Standards** | WCAG 2.0 / 2.1 / 2.2, Section 508, WAI-ARIA 1.1 |
+| **Standards** | WCAG 2.0 / 2.1 / **2.2**, Section 508, EN 301 549, EAA, WAI-ARIA 1.2 |
+| **Semantic HTML** | Landmarks, headings, lists, tables, forms — full element reference |
+| **Typography** | Size, spacing, reflow, zoom, dyslexia-friendly faces |
+| **Color palettes** | Contrast matrix, state tokens, dark mode, forced-colors, color blindness |
+| **Audit** | Scope, sampling, severity scale, ACR/VPAT, remediation roadmap |
+| **Inclusive research** | Recruitment, consent, modality, disability categories |
+| **Handoff** | Designer → Developer → QA phase-by-phase checklist |
+| **KPIs** | Automated violation density, MTTR, conformance rate, AC coverage |
+| **Disability theory** | Medical / Social / ICF / CRPD / Identity models |
+| **Stacks** | Next.js App Router, Angular, Svelte, Astro, SolidJS + SwiftUI, Jetpack Compose |
+| **User preferences** | prefers-reduced-motion, prefers-contrast, forced-colors, prefers-reduced-transparency |
+| **Alternative input** | Switch access, voice control, eye tracking, head pointer, cognitive a11y (COGA) |
+| **Legal** | 25+ jurisdictions with law, standard, scope, and effective date |
+| **ES glossary** | Spanish ↔ English (70+ terms with definitions and context) |
+| **Templates** | Audit report template, GitHub Actions CI pipeline |
+| **Prompts** | 6 Claude prompts ready to copy-paste |
 | **Components** | Modals, tabs, accordions, forms, tables, date pickers, autocomplete, icon buttons, carousels, sliders, drag-and-drop |
 | **Keyboard** | Tab order, focus management, arrow key patterns, keyboard traps |
 | **Color** | Contrast ratios AA/AAA, non-text contrast, color-only information |
@@ -126,12 +175,30 @@ wcag-accessibility/
   SKILL.md                    ← Claude skill (loaded by Claude Code)
   README.md                   ← This file
   data/
-    wcag-criteria.csv         ← All WCAG 2.1 A/AA criteria
-    aria-patterns.csv         ← 25+ component ARIA patterns
-    testing-tools.csv         ← 30+ accessibility testing tools
-    screen-reader-keys.csv    ← Keyboard shortcuts for 5 screen readers
+    wcag-criteria.csv         ← WCAG 2.1 A/AA + WCAG 2.2 additions
+    aria-patterns.csv         ← Component ARIA patterns
+    testing-tools.csv         ← Accessibility testing tools
+    screen-reader-keys.csv    ← Shortcuts for 5 screen readers
+    semantic-html.csv         ← Semantic HTML reference
+    typography-rules.csv      ← Accessible typography rules
+    color-palette-rules.csv   ← Palette design rules (AA, HCM, CVD)
+    kpis.csv                  ← Accessibility KPIs
+    handoff-checklist.csv     ← Design → Dev → QA handoff
+    disability-models.csv     ← Theoretical models of disability
+    glossary-es.csv           ← Spanish ↔ English glossary
+    legal-framework.csv       ← Legal frameworks by jurisdiction
   scripts/
-    search.py                 ← CLI search utility
+    search.py                 ← CLI search across all 12 databases
+  templates/
+    audit-report.md           ← Fill-in audit report template
+    a11y-ci.yml               ← GitHub Actions CI pipeline
+  prompts/
+    audit-component.md
+    sc-to-acceptance-criteria.md
+    generate-alt-text.md
+    review-figma-handoff.md
+    summarize-audit-findings.md
+    generate-aria-pattern.md
 ```
 
 ---
@@ -159,10 +226,10 @@ Additional standards and references:
 Improvements, corrections, and new component patterns are welcome. Open a PR referencing the relevant WCAG success criterion or WAI-ARIA pattern.
 
 Areas that could grow:
-- More stack examples (Svelte, Angular, Next.js App Router)
-- Additional ARIA patterns (data grids, tree views, virtual lists)
-- WCAG 2.2 new criteria (2.4.11–2.4.13, 3.2.6, 3.3.7–3.3.8)
-- Automated test templates per framework
+- More stack examples (Svelte, Angular, Next.js App Router, SwiftUI, Jetpack Compose)
+- Additional ARIA patterns (virtual lists, carousels, complex data grids)
+- Localization of Spanish-language a11y terminology
+- Remediation cost/effort estimation heuristics
 
 ---
 

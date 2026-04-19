@@ -1,0 +1,29 @@
+element,role,use_for,avoid_when,notes
+header,banner (top-level),Site-wide header,Inside article/section (then no role),Only one banner landmark per page
+nav,navigation,Primary or secondary nav groups,Single link (use plain link),Label multiple navs with aria-label
+main,main,Primary content,More than one per page,One main landmark per page
+aside,complementary,Tangentially related content,Inside main content flow,Label with aria-label when multiple
+footer,contentinfo (top-level),Site-wide footer,Inside article/section (then no role),Only one contentinfo per page
+section,region (if labeled),Thematic grouping of content,Generic container (use div),Needs aria-labelledby/aria-label for landmark
+article,article,Self-contained composition (post card),Wrapping generic UI,Meaningful standalone unit
+h1-h6,heading,Section titles in hierarchy,Skipping levels,One h1 per page (app or view)
+button,button,Actions in page,Navigation to URL (use a),Type=button inside forms to avoid submit
+a,link,Navigate to URL / anchor,Triggering an action,Must have href; Enter activates
+ul/ol/li,list/listitem,Grouped items,Single item,Preserves count announcement
+dl/dt/dd,term/definition,Key-value pairs,Tabular data (use table),Useful for meta / specs
+table,table,Data relationships,Layout,Include caption and th scope
+th,columnheader/rowheader,Column or row header cells,Data cells,scope=col or scope=row
+caption,caption,Table title,Absent when table is data,First child of table
+label,-,Associate text with form field,Icon-only buttons,Use for or wrap input
+fieldset/legend,group,Grouping related form controls,Every field,Essential for radio groups
+input type=search,searchbox,Search field,Generic text when labeled as search,Gets SR search announcement
+input type=email/tel/url/number,-,Typed input with mobile keyboard,Generic text,Triggers appropriate mobile keyboard
+details/summary,disclosure,Progressive disclosure,Complex accordion with many rules,Simple expand/collapse
+dialog,dialog,Modal/non-modal dialog,Complex menus (use popover),Use showModal() for focus trap
+figure/figcaption,figure,Image with caption,Decorative images,figcaption provides description
+time,-,Machine-readable dates,Freeform date text,datetime attribute
+mark,-,Highlighted relevance (search),Stylistic emphasis,Use em for stress emphasis
+abbr,-,Abbreviations with title expansion,Obvious acronyms,title announced on some SR
+output,status,Calculated result in form,Generic div,Live region by default
+progress,progressbar,Determinate progress,Indeterminate forever,Shows % via value/max
+meter,meter,Scalar measurement in known range,Progress (use progress),E.g., disk usage level

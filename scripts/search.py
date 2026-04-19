@@ -28,6 +28,14 @@ WCAG_CSV = DATA_DIR / "wcag-criteria.csv"
 ARIA_CSV = DATA_DIR / "aria-patterns.csv"
 TOOLS_CSV = DATA_DIR / "testing-tools.csv"
 KEYS_CSV = DATA_DIR / "screen-reader-keys.csv"
+KPIS_CSV = DATA_DIR / "kpis.csv"
+MODELS_CSV = DATA_DIR / "disability-models.csv"
+TYPOGRAPHY_CSV = DATA_DIR / "typography-rules.csv"
+COLOR_CSV = DATA_DIR / "color-palette-rules.csv"
+HANDOFF_CSV = DATA_DIR / "handoff-checklist.csv"
+SEMANTIC_CSV = DATA_DIR / "semantic-html.csv"
+GLOSSARY_CSV = DATA_DIR / "glossary-es.csv"
+LEGAL_CSV = DATA_DIR / "legal-framework.csv"
 
 
 def load_csv(path: Path) -> list[dict]:
@@ -143,6 +151,94 @@ def cmd_keys(args: argparse.Namespace) -> None:
     print_table(rows, ["reader", "platform", "mode", "action", "key"])
 
 
+# ── KPIs ──────────────────────────────────────────────────────────────────────
+
+def cmd_kpis(args: argparse.Namespace) -> None:
+    rows = load_csv(KPIS_CSV)
+    if args.category:
+        rows = [r for r in rows if args.category.lower() in r["category"].lower()]
+    if args.keyword:
+        rows = [r for r in rows if matches(r, args.keyword)]
+    print_table(rows, ["kpi", "category", "target", "cadence", "formula"])
+
+
+# ── DISABILITY MODELS ─────────────────────────────────────────────────────────
+
+def cmd_models(args: argparse.Namespace) -> None:
+    rows = load_csv(MODELS_CSV)
+    if args.keyword:
+        rows = [r for r in rows if matches(r, args.keyword)]
+    print_table(rows, ["model", "focus", "view_of_disability", "design_implication"])
+
+
+# ── TYPOGRAPHY ────────────────────────────────────────────────────────────────
+
+def cmd_typography(args: argparse.Namespace) -> None:
+    rows = load_csv(TYPOGRAPHY_CSV)
+    if args.category:
+        rows = [r for r in rows if args.category.lower() in r["category"].lower()]
+    if args.keyword:
+        rows = [r for r in rows if matches(r, args.keyword)]
+    print_table(rows, ["rule", "category", "recommendation", "wcag_ref"])
+
+
+# ── COLOR PALETTE ─────────────────────────────────────────────────────────────
+
+def cmd_color(args: argparse.Namespace) -> None:
+    rows = load_csv(COLOR_CSV)
+    if args.scope:
+        rows = [r for r in rows if args.scope.lower() in r["scope"].lower()]
+    if args.keyword:
+        rows = [r for r in rows if matches(r, args.keyword)]
+    print_table(rows, ["rule", "scope", "recommendation", "wcag_ref", "tool"])
+
+
+# ── HANDOFF ───────────────────────────────────────────────────────────────────
+
+def cmd_handoff(args: argparse.Namespace) -> None:
+    rows = load_csv(HANDOFF_CSV)
+    if args.phase:
+        rows = [r for r in rows if args.phase.lower() in r["phase"].lower()]
+    if args.owner:
+        rows = [r for r in rows if args.owner.lower() in r["owner"].lower()]
+    if args.keyword:
+        rows = [r for r in rows if matches(r, args.keyword)]
+    print_table(rows, ["phase", "owner", "item", "artifact"])
+
+
+# ── SEMANTIC HTML ─────────────────────────────────────────────────────────────
+
+def cmd_semantic(args: argparse.Namespace) -> None:
+    rows = load_csv(SEMANTIC_CSV)
+    if args.element:
+        rows = [r for r in rows if args.element.lower() in r["element"].lower()]
+    if args.keyword:
+        rows = [r for r in rows if matches(r, args.keyword)]
+    print_table(rows, ["element", "role", "use_for", "avoid_when"])
+
+
+# ── GLOSSARY (ES↔EN) ─────────────────────────────────────────────────────────
+
+def cmd_glossary(args: argparse.Namespace) -> None:
+    rows = load_csv(GLOSSARY_CSV)
+    if args.keyword:
+        rows = [r for r in rows if matches(r, args.keyword)]
+    if args.context:
+        rows = [r for r in rows if args.context.lower() in r["contexto"].lower()]
+    print_table(rows, ["en", "es", "definicion", "contexto"])
+
+
+# ── LEGAL FRAMEWORK ────────────────────────────────────────────────────────────
+
+def cmd_legal(args: argparse.Namespace) -> None:
+    rows = load_csv(LEGAL_CSV)
+    if args.jurisdiction:
+        rows = [r for r in rows if args.jurisdiction.lower() in r["jurisdiction"].lower()]
+    if args.keyword:
+        rows = [r for r in rows if matches(r, args.keyword)]
+    print_table(rows, ["jurisdiction", "law", "standard_referenced", "effective", "scope"])
+
+
 # ── CLI ───────────────────────────────────────────────────────────────────────
 
 def main() -> None:
@@ -183,6 +279,46 @@ def main() -> None:
     p_keys.add_argument("--mode", help="Browse / Forms / Table / General / Web")
     p_keys.add_argument("--action", help="Keyword in action name (e.g. heading, link, table)")
 
+    # kpis subcommand
+    p_kpis = sub.add_parser("kpis", help="Search accessibility KPIs")
+    p_kpis.add_argument("--category", help="Technical / Conformance / Remediation / User Outcome / Visual / Design System / Process / Organization / Regression / Feedback / Compliance / Perceivable")
+    p_kpis.add_argument("--keyword", help="Search across all fields")
+
+    # disability models subcommand
+    p_models = sub.add_parser("models", help="Search theoretical models of disability")
+    p_models.add_argument("--keyword", help="Search across all fields")
+
+    # typography subcommand
+    p_type = sub.add_parser("typography", help="Search accessible typography rules")
+    p_type.add_argument("--category", help="Size / Spacing / Layout / Responsive / Contrast / Meaning / Technical / Style / Weight / Face / Perceivable / Links")
+    p_type.add_argument("--keyword", help="Search across all fields")
+
+    # color subcommand
+    p_color = sub.add_parser("color", help="Search color palette rules")
+    p_color.add_argument("--scope", help="Text / Non-text / Meaning / System / Theme / Charts / Brand / Backgrounds / Design tokens / Disabled / Windows / Perception / Differentiation / Alternate media / Links")
+    p_color.add_argument("--keyword", help="Search across all fields")
+
+    # handoff subcommand
+    p_hand = sub.add_parser("handoff", help="Search design-to-dev a11y handoff checklist")
+    p_hand.add_argument("--phase", help="Research / Design / Development / QA / Release")
+    p_hand.add_argument("--owner", help="UX / Designer / Dev / QA / PM / Content / Compliance")
+    p_hand.add_argument("--keyword", help="Search across all fields")
+
+    # semantic HTML subcommand
+    p_sem = sub.add_parser("semantic", help="Search semantic HTML element reference")
+    p_sem.add_argument("--element", help="Element name (e.g. nav, button, table)")
+    p_sem.add_argument("--keyword", help="Search across all fields")
+
+    # glossary subcommand
+    p_gloss = sub.add_parser("glossary", help="Spanish <-> English accessibility glossary")
+    p_gloss.add_argument("--keyword", help="Search term in English or Spanish")
+    p_gloss.add_argument("--context", help="Context category (e.g. ARIA / Legal / AT / Teclado)")
+
+    # legal subcommand
+    p_legal = sub.add_parser("legal", help="Legal frameworks by jurisdiction")
+    p_legal.add_argument("--jurisdiction", help="Country or region (e.g. Spain, Brazil, EU, US)")
+    p_legal.add_argument("--keyword", help="Search across all fields")
+
     args = parser.parse_args()
 
     dispatch = {
@@ -190,6 +326,14 @@ def main() -> None:
         "aria": cmd_aria,
         "tools": cmd_tools,
         "keys": cmd_keys,
+        "kpis": cmd_kpis,
+        "models": cmd_models,
+        "typography": cmd_typography,
+        "color": cmd_color,
+        "handoff": cmd_handoff,
+        "semantic": cmd_semantic,
+        "glossary": cmd_glossary,
+        "legal": cmd_legal,
     }
     dispatch[args.command](args)
 

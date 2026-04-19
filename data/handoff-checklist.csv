@@ -1,0 +1,27 @@
+phase,item,owner,artifact,description
+Research,Inclusive personas defined,UX,Persona doc,Include disability types assistive tech context and environment
+Research,Inclusive participants recruited,UX,Recruitment plan,Interview with users across disability categories (see disability-models.csv)
+Design,Semantic structure annotated,Designer,Figma spec,Mark headings landmarks lists buttons vs links in design
+Design,Focus order documented,Designer,Figma spec,Arrow indicating tab order on interactive mockups
+Design,Keyboard interactions specified,Designer,Interaction spec,State expected key behavior (Tab arrows Enter Space Esc)
+Design,ARIA roles and names documented,Designer,Annotation layer,Role state and accessible name for each custom component
+Design,Target size >= 24x24 px,Designer,Spec,Minimum per WCAG 2.2 2.5.8; 44x44 recommended
+Design,Color tokens contrast-audited,Designer,Token sheet,Contrast ratios listed for every token pair
+Design,Focus indicator specified,Designer,Component library,Focus ring styles documented and contrast checked
+Design,Error and status patterns,Designer,Pattern library,Inline error text + icon + aria-live region reference
+Design,Content hierarchy clear,Content,Copy doc,Heading levels plain language link text describes destination
+Development,Semantic HTML used,Dev,Code,Prefer native elements over ARIA
+Development,Accessible name on every control,Dev,Code,aria-label aria-labelledby or visible text
+Development,Keyboard support implemented,Dev,Code,Matches design keyboard spec; no traps
+Development,Focus management on route/modal,Dev,Code,Focus moves appropriately; returned to trigger on close
+Development,Live regions wired,Dev,Code,aria-live for async status; role=alert for errors
+Development,Reduced motion honored,Dev,Code,prefers-reduced-motion disables non-essential animation
+Development,Forced colors supported,Dev,Code,forced-colors media query handled
+QA,Automated scan clean,QA,axe/lighthouse report,No serious/critical violations on core flows
+QA,Keyboard-only walkthrough,QA,Checklist,Every feature reachable and operable via keyboard
+QA,Screen reader walkthrough,QA,Recording,NVDA+Firefox VoiceOver+Safari TalkBack+Chrome
+QA,Zoom 200% and 400%,QA,Screenshot,No loss of content or functionality
+QA,Touch target audit,QA,Checklist,>= 24x24 CSS px on pointer targets
+QA,VPAT/ACR updated,Compliance,ACR doc,Conformance statement reflects actual state
+Release,Release notes call out a11y,PM,Release notes,Fixes and known issues listed
+Release,A11y acceptance criteria signed off,PM,Ticket,Each story has verified AC

@@ -1,0 +1,66 @@
+en,es,definicion,contexto
+accessibility,accesibilidad,Condición que deben cumplir productos entornos servicios para ser comprensibles utilizables y practicables por todas las personas,General
+accessible name,nombre accesible,Texto que las tecnologías asistivas anuncian para un elemento interactivo,ARIA
+accessibility tree,árbol de accesibilidad,Representación que expone el navegador a las tecnologías asistivas derivada del DOM,Navegador
+ACR / VPAT,Informe de Conformidad de Accesibilidad / VPAT,Documento que declara nivel de soporte por cada criterio WCAG,Compliance
+alt text,texto alternativo,Descripción textual para contenido no textual,1.1.1
+assistive technology (AT),tecnología asistiva / tecnología de apoyo,Hardware o software usado por personas con discapacidad (lectores de pantalla magnificadores switch),General
+audit,auditoría,Evaluación sistemática contra un estándar WCAG,Proceso
+axe-core,axe-core,Motor de reglas automatizadas de Deque,Herramienta
+barrier,barrera,Obstáculo que impide el acceso equitativo,General
+biopsychosocial model,modelo biopsicosocial,Modelo ICF de la OMS que integra factores corporales de actividad y entorno,Teoría
+captions,subtítulos / leyendas,Texto sincronizado con audio y efectos sonoros,1.2.2
+CRPD,Convención sobre los Derechos de las Personas con Discapacidad,Tratado ONU que establece la accesibilidad como derecho humano,Legal
+color blindness,daltonismo / anomalía cromática,Visión con percepción reducida del color (deuteranopia protanopia tritanopia),Visión
+color contrast,contraste de color,Ratio de luminancia entre dos colores,1.4.3
+combobox,combobox / cuadro combinado,Campo con sugerencias dinámicas,ARIA
+consent,consentimiento,Autorización informada del participante en investigación,Investigación
+CVD,deficiencia de visión del color (DVC),Término general para daltonismo,Visión
+Deaf,Sorda/Sordo (con mayúscula = identidad cultural),Persona que se identifica con la comunidad Sorda y la lengua de señas,Identidad
+disability,discapacidad,Interacción entre condiciones de salud y barreras del entorno,General
+EAA,Ley Europea de Accesibilidad,Directiva UE 2019/882 aplicable desde 28-jun-2025,Legal
+EN 301 549,EN 301 549,Norma europea que referencia WCAG para TIC,Legal
+focus,foco,Elemento que recibe entradas de teclado,Teclado
+focus indicator,indicador de foco,Señal visual del elemento enfocado,2.4.7
+focus management,gestión del foco,Mover el foco al abrir/cerrar diálogos o al navegar,UX
+focus trap,atrapamiento de foco,Foco que no puede salir de un diálogo modal (intencional) o bug (no intencional),Diálogos
+focus visible,foco visible,Requisito WCAG 2.4.7,2.4.7
+forced colors,colores forzados (Modo de alto contraste de Windows),Sistema que reemplaza colores del sitio con paleta del usuario,HCM
+handoff,traspaso / handoff,Entrega de especificaciones de diseño a desarrollo,Proceso
+hard of hearing,persona con hipoacusia,Pérdida auditiva parcial,Identidad
+heading,encabezado / título,Elemento h1-h6 que estructura la página,1.3.1
+identity-first language,lenguaje identidad-primero,"Persona autista" en lugar de "persona con autismo",Lenguaje
+inclusive design,diseño inclusivo,Método que considera la diversidad humana completa,General
+JAWS,JAWS,Lector de pantalla comercial para Windows,Herramienta
+keyboard trap,trampa de teclado,Foco que queda atascado,2.1.2
+landmark,punto de referencia / landmark,Regiones ARIA (banner navigation main complementary contentinfo),Estructura
+large text,texto grande,>=18pt o 14pt negrita,1.4.3
+live region,región en vivo,Zona que anuncia actualizaciones dinámicas,aria-live
+low vision,baja visión,Agudeza visual reducida que no se corrige con lentes,Identidad
+motion,movimiento,Animaciones y transiciones,2.3.3 / prefers-reduced-motion
+non-text content,contenido no textual,Imágenes íconos gráficos audio video controles,1.1.1
+NVDA,NVDA,Lector de pantalla gratuito para Windows,Herramienta
+operable,operable,Principio WCAG O,POUR
+perceivable,perceptible,Principio WCAG P,POUR
+person-first language,lenguaje persona-primero,"Persona con discapacidad" en lugar de "discapacitado",Lenguaje
+POUR,POUR,"Perceptible Operable Comprensible Robusto",Principios WCAG
+robust,robusto,Principio WCAG R,POUR
+remediation,remediación / mitigación,Corrección de hallazgos de accesibilidad,Proceso
+screen reader,lector de pantalla,Software que convierte pantalla en voz y braille,AT
+semantic HTML,HTML semántico,HTML que expresa significado mediante elementos apropiados,Estructura
+Section 508,Sección 508,Ley EE.UU. que exige accesibilidad en TIC federal,Legal
+social model,modelo social,Discapacidad causada por barreras no por la persona,Teoría
+skip link,enlace de salto,Enlace "Saltar al contenido principal",2.4.1
+status message,mensaje de estado,Mensaje anunciado sin cambiar foco,4.1.3
+switch control,control por switch,Entrada accesible por uno o dos botones,Hardware
+tab order,orden de tabulación,Secuencia al presionar Tab,2.4.3
+TalkBack,TalkBack,Lector de pantalla de Android,Herramienta
+target size,tamaño de objetivo,Tamaño mínimo clic/tap 24x24 CSS px,2.5.8
+tecnología asistiva,tecnología asistiva,Ver AT,General
+understandable,comprensible,Principio WCAG U,POUR
+user preference,preferencia del usuario,Ajustes del sistema (contraste movimiento tamaño),Preferencias
+VoiceOver,VoiceOver,Lector de pantalla de Apple (macOS/iOS),Herramienta
+voice control,control por voz,Entrada por comandos de voz (Voice Access Dragon),Hardware
+WCAG,WCAG / Pautas de Accesibilidad para el Contenido Web,Estándar W3C,Norma
+WAI-ARIA,WAI-ARIA,Especificación para exponer semántica de widgets,Norma
+zoom,ampliación / zoom,Escalado del contenido,1.4.4
