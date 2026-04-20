@@ -15,6 +15,10 @@ Usage:
   python search.py tools --free
   python search.py keys --reader NVDA
   python search.py keys --action heading
+  python search.py resources --category "Official Standards"
+  python search.py resources --type Blog --url
+  python search.py resources --authority W3C
+  python search.py resources --keyword "WCAG 2.2"
 """
 
 import csv
@@ -36,6 +40,7 @@ HANDOFF_CSV = DATA_DIR / "handoff-checklist.csv"
 SEMANTIC_CSV = DATA_DIR / "semantic-html.csv"
 GLOSSARY_CSV = DATA_DIR / "glossary-es.csv"
 LEGAL_CSV = DATA_DIR / "legal-framework.csv"
+RESOURCES_CSV = DATA_DIR / "resources.csv"
 
 
 def load_csv(path: Path) -> list[dict]:
@@ -239,6 +244,30 @@ def cmd_legal(args: argparse.Namespace) -> None:
     print_table(rows, ["jurisdiction", "law", "standard_referenced", "effective", "scope"])
 
 
+# ── RESOURCES (books, blogs, research, tools) ─────────────────────────────────
+
+def cmd_resources(args: argparse.Namespace) -> None:
+    rows = load_csv(RESOURCES_CSV)
+    if args.category:
+        rows = [r for r in rows if args.category.lower() in r["Category"].lower()]
+    if args.type:
+        rows = [r for r in rows if args.type.lower() in r["Type"].lower()]
+    if args.authority:
+        rows = [r for r in rows if args.authority.lower() in r["Authority"].lower()]
+    if args.language:
+        rows = [r for r in rows if args.language.lower() in r["Language"].lower()]
+    if args.year:
+        rows = [r for r in rows if args.year in r["Year"]]
+    if args.keyword:
+        rows = [r for r in rows if matches(r, args.keyword)]
+    print_table(rows, ["Category", "Title", "Type", "Authority", "Year"])
+
+    if args.url and rows:
+        print()
+        for r in rows:
+            print(f"  {r['Title']} -> {r['URL']}")
+
+
 # ── CLI ───────────────────────────────────────────────────────────────────────
 
 def main() -> None:
@@ -319,6 +348,16 @@ def main() -> None:
     p_legal.add_argument("--jurisdiction", help="Country or region (e.g. Spain, Brazil, EU, US)")
     p_legal.add_argument("--keyword", help="Search across all fields")
 
+    # resources subcommand
+    p_res = sub.add_parser("resources", help="Search curated resources (books, blogs, research, tools)")
+    p_res.add_argument("--category", help="Category (e.g. Official Standards, Blogs, Research, Tools, Libraries)")
+    p_res.add_argument("--type", help="Type (e.g. Blog, Tool, Specification, Research, Guide, Library)")
+    p_res.add_argument("--authority", help="Authority (e.g. W3C, WebAIM, Deque, IAAP)")
+    p_res.add_argument("--language", help="Language code (EN, ES, FR, etc.)")
+    p_res.add_argument("--year", help="Year filter (e.g. 2024, 2025)")
+    p_res.add_argument("--keyword", help="Search across all fields")
+    p_res.add_argument("--url", action="store_true", help="Show resource URLs")
+
     args = parser.parse_args()
 
     dispatch = {
@@ -334,6 +373,7 @@ def main() -> None:
         "semantic": cmd_semantic,
         "glossary": cmd_glossary,
         "legal": cmd_legal,
+        "resources": cmd_resources,
     }
     dispatch[args.command](args)
 

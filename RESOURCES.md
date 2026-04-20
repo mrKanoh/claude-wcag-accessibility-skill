@@ -52,7 +52,7 @@ A curated, continuously-updated collection of books, blogs, research papers, too
 | **WebAIM** | https://webaim.org/ |
 | **The A11Y Project** | https://www.a11yproject.com/ |
 | **Deque Systems** | https://www.deque.com/ |
-| **Paciello Group (TPG)** | https://www.tpgcomfortdelite.com/ |
+| **TPGi (The Paciello Group)** | https://www.tpgi.com/ |
 
 ---
 
@@ -88,7 +88,7 @@ A curated, continuously-updated collection of books, blogs, research papers, too
 |------|-----|
 | **WebAIM Blog** | https://webaim.org/blog/ |
 | **Deque Blog** | https://www.deque.com/blog/ |
-| **The Paciello Group** | https://www.tpgcomfortdelite.com/blog/ |
+| **TPGi (The Paciello Group)** | https://www.tpgi.com/blog/ |
 | **AllAccessible Blog** | https://www.allaccessible.org/blog/ |
 | **Paul J. Adam** | https://pauljadam.com/ |
 

@@ -98,6 +98,12 @@ python scripts/search.py handoff --phase Design --owner Designer
 
 # Models of disability
 python scripts/search.py models --keyword social
+
+# Curated resources (books, blogs, research, tools)
+python scripts/search.py resources --category "Official Standards"
+python scripts/search.py resources --type Blog --url
+python scripts/search.py resources --authority W3C
+python scripts/search.py resources --keyword "WCAG 2.2"
 ```
 
 | File | Contents |
@@ -114,7 +120,9 @@ python scripts/search.py models --keyword social
 | `data/disability-models.csv` | Medical / Social / Biopsychosocial / CRPD / Identity |
 | `data/glossary-es.csv` | Spanish ↔ English a11y glossary (70+ terms with definitions) |
 | `data/legal-framework.csv` | 25+ jurisdictions: ADA, EAA, Section 508, AODA, LGPD, and more |
-| `scripts/search.py` | CLI search across all 12 databases |
+| `data/resources.csv` | 50+ curated books, blogs, research papers, tools, and standards |
+| `scripts/search.py` | CLI search across all 13 databases |
+| `RESOURCES.md` | Human-readable bibliography — browse by category, W3C standards, academic research, etc. |
 | `templates/audit-report.md` | Fill-in audit report template |
 | `templates/a11y-ci.yml` | GitHub Actions pipeline (axe + pa11y + Playwright + Lighthouse) |
 | `prompts/audit-component.md` | Prompt: audit a UI component |
@@ -221,7 +229,7 @@ Understand disability, research users, and document your process.
 
 ### 📚 **Reference & Localization**
 
-Keep 12 searchable databases at your fingertips—in English and Spanish.
+Keep 13 searchable databases at your fingertips—in English and Spanish.
 
 | Domain | What You Can Do |
 |--------|-----------------|
@@ -239,7 +247,7 @@ wcag-accessibility/
   ├─ SKILL.md                          ← Claude skill (loaded by Claude Code)
   ├─ README.md                         ← This file
   │
-  ├─ data/                             ← 12 searchable databases
+  ├─ data/                             ← 13 searchable databases
   │  ├─ wcag-criteria.csv              WCAG 2.0/2.1 + WCAG 2.2 (70+ criteria)
   │  ├─ aria-patterns.csv              25+ component patterns: keyboard, focus, roles
   │  ├─ testing-tools.csv              30+ tools: axe, WAVE, Accessibility Insights, etc.
@@ -251,10 +259,13 @@ wcag-accessibility/
   │  ├─ handoff-checklist.csv          Research → Design → Dev → QA → Release checklist
   │  ├─ disability-models.csv          Medical, Social, ICF, CRPD, Identity frameworks
   │  ├─ glossary-es.csv                Spanish ↔ English a11y glossary (70+ terms)
-  │  └─ legal-framework.csv            25+ jurisdictions: ADA, EAA, Section 508, AODA, LGPD
+  │  ├─ legal-framework.csv            25+ jurisdictions: ADA, EAA, Section 508, AODA, LGPD
+  │  └─ resources.csv                  50+ curated books, blogs, research, tools
+  │
+  ├─ RESOURCES.md                      ← Human-readable bibliography by category
   │
   ├─ scripts/
-  │  └─ search.py                      ← CLI to query all 12 databases
+  │  └─ search.py                      ← CLI to query all 13 databases
   │                                       Usage: python search.py wcag --level AA
   │
   ├─ templates/                        ← Ready-to-use files
