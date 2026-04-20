@@ -1,0 +1,48 @@
+Category,Title,Type,URL,Description,Language,Year,Authority
+Official Standards,WCAG 2.2 Quick Reference,Specification,https://www.w3.org/WAI/WCAG22/quickref/,Official W3C quick reference for all WCAG 2.2 success criteria,EN,2023,W3C
+Official Standards,Understanding WCAG 2.2,Specification,https://www.w3.org/WAI/WCAG22/Understanding/,Detailed understanding documents for each WCAG criterion,EN,2023,W3C
+Official Standards,WCAG 2.2 Full Standard,Specification,https://www.w3.org/TR/WCAG22/,Complete WCAG 2.2 technical specification,EN,2023,W3C
+Official Standards,WAI-ARIA Authoring Practices Guide (APG),Specification,https://www.w3.org/WAI/ARIA/apg/,Authoritative guide for implementing WAI-ARIA patterns,EN,2024,W3C WAI
+Official Standards,WCAG Evaluation Methodology (WCAG-EM) 2.0,Methodology,https://w3c.github.io/wai-wcag-em/,Official methodology for conducting accessibility audits,EN,2024,W3C
+Organizations,WebAIM,Organization,https://webaim.org/,Comprehensive free accessibility resources; articles; newsletter; discussion list,EN,Ongoing,WebAIM
+Organizations,The A11Y Project,Community,https://www.a11yproject.com/,Community-driven accessibility resources; checklists; jobs board,EN,Ongoing,The A11Y Project
+Organizations,Deque Systems,Organization,https://www.deque.com/,Accessibility experts; axe-core; training; consulting,EN,Ongoing,Deque
+Organizations,Inclusive Components,Blog,https://inclusive-components.design/,Deep-dive articles on building accessible components (Heydon Pickering),EN,Ongoing,Heydon Pickering
+Tools,axe DevTools,Tool,https://www.deque.com/axe/devtools/,Browser extension for automated accessibility testing; industry standard,EN,Ongoing,Deque
+Tools,WAVE Browser Extension,Tool,https://wave.webaim.org/,WebAIM's visual feedback tool; contrast issues; structure,EN,Ongoing,WebAIM
+Tools,Lighthouse,Tool,https://developers.google.com/web/tools/lighthouse,Google's open-source auditing tool; includes accessibility module,EN,Ongoing,Google
+Tools,pa11y,Tool,https://pa11y.org/,Open-source accessibility testing; CLI + dashboard,EN,Ongoing,Springload
+Tools,Accessibility Insights,Tool,https://accessibilityinsights.io/,Microsoft's comprehensive accessibility testing suite,EN,Ongoing,Microsoft
+Libraries,React Aria,Library,https://react-spectrum.adobe.com/react-aria/,Accessible React components with hooks (Adobe),EN,Ongoing,Adobe
+Libraries,Radix UI,Library,https://www.radix-ui.com/,Headless accessible component library for React,EN,Ongoing,Radix
+Libraries,Headless UI,Library,https://headlessui.com/,Unstyled accessible components (Tailwind Labs),EN,Ongoing,Tailwind Labs
+Guides,AllAccessible WCAG 2.2 Complete Guide,Guide,https://www.allaccessible.org/blog/wcag-22-complete-guide-2025,Comprehensive 2025 guide covering all 9 new WCAG 2.2 criteria,EN,2025,AllAccessible
+Guides,Super Simple WCAG 2 Guide,Guide,https://www.w3.org/WAI/WCAG2/supplemental/,Practical explanations of WCAG success criteria,EN,2024,W3C
+Guides,Accessibility Checklist,Checklist,https://accessible.org/wcag/,WCAG 2.1 AA and 2.2 AA practical checklist,EN,2024,Accessible.org
+Guides,USWDS (U.S. Web Design System),System,https://designsystem.digital.gov/,Accessible design system for U.S. government digital products,EN,Ongoing,USWDS
+Research,Policy in Practice: WCAG 2.2 and ADA 2024 Effects,Research,https://www.researchgate.net/publication/396366120_Policy_in_Practice_A_Systematic_Review_of_WCAG_22_and_ADA_2024_Effects_on_Web_and_Mobile_Accessibility,Systematic review of WCAG 2.2 compliance impacts on digital accessibility,EN,2024,ResearchGate
+Research,Accessibility Engineering in Web Evaluation,Research,https://pmc.ncbi.nlm.nih.gov/articles/PMC9881526/,Systematic literature review of accessibility evaluation approaches,EN,2022,PMC/NIH
+Research,State of Web Accessibility for Cognitive Disabilities,Research,https://pmc.ncbi.nlm.nih.gov/articles/PMC8869505/,Rapid evidence assessment on accessibility for cognitive disabilities,EN,2022,PMC
+Research,Web Accessibility of Top UK Universities,Research,https://journals.sagepub.com/doi/full/10.1177/21582440211056614,Case study of accessibility compliance in higher education,EN,2021,Sophia Alim
+Research,Large-Scale Study of Web Accessibility Metrics,Research,https://link.springer.com/article/10.1007/s10209-022-00956-x,Empirical analysis of web accessibility metrics at scale,EN,2022,Springer
+Research,Evaluating Digital Maps Using WCAG,Research,https://pmc.ncbi.nlm.nih.gov/articles/PMC12094671/,Accessibility evaluation methodology for geospatial tools,EN,2024,PMC
+Standards,Section 508 (U.S. Federal),Legal,https://www.section508.gov/,U.S. federal accessibility standards; references WCAG 2.0 AA,EN,Ongoing,U.S. GSA
+Standards,EN 301 549 (EU),Legal,https://www.etsi.org/deliver/etsi_en/301500_301599/301549/03.02.01_60/en_301549v030201p.pdf,EU standard for ICT accessibility; aligns with WCAG 2.1 AA,EN,2021,ETSI
+Standards,EAA (European Accessibility Act),Legal,https://digital-strategy.ec.europa.eu/en/policies/accessibility-act,EU directive requiring WCAG 2.1 AA by June 28 2025 for digital products,EN,2025,EU
+Standards,UN CRPD (Convention on Rights of Persons with Disabilities),Treaty,https://www.un.org/development/desa/disabilities/convention-on-the-rights-of-persons-with-disabilities.html,International human rights treaty; emphasizes accessibility as a right,EN,2006,United Nations
+Blogs,WebAIM Blog,Blog,https://webaim.org/blog/feed/,Regular articles on accessibility best practices; research; tools,EN,Ongoing,WebAIM
+Blogs,Deque Blog,Blog,https://www.deque.com/blog/,Industry insights; accessibility trends; case studies,EN,Ongoing,Deque
+Blogs,UsableNet Blog,Blog,https://blog.usablenet.com/wcag-2.2,WCAG implementation guide; compliance news,EN,Ongoing,UsableNet
+Blogs,AllAccessible Blog,Blog,https://www.allaccessible.org/blog/,Accessibility tips; WCAG updates; remediation strategies,EN,Ongoing,AllAccessible
+Blogs,TPGi (The Paciello Group) Blog,Blog,https://www.tpgi.com/blog/,Accessibility research; emerging standards; tools reviews,EN,Ongoing,TPGi
+Communities,WAI Interest Group,Community,https://www.w3.org/WAI/about/groups/,W3C groups developing accessibility standards,EN,Ongoing,W3C WAI
+Communities,A11y Slack,Community,https://www.a11yproject.com/,Active Slack community for accessibility professionals,EN,Ongoing,A11Y Project
+Communities,Accessibility Subreddit,Community,https://www.reddit.com/r/accessibility/,Active discussion of accessibility issues and solutions,EN,Ongoing,Reddit
+Video,WebAIM Webinars,Video,https://webaim.org/articles/screenreader/,Screen reader testing tutorials; accessibility workshops,EN,Ongoing,WebAIM
+Video,Deque University,Video,https://dequeuniversity.com/,Comprehensive accessibility training courses,EN,Ongoing,Deque
+Certification,IAAP CPACC,Certification,https://www.accessibilityassociation.org/,Certified Professional in Accessibility Core Competencies,EN,Ongoing,IAAP
+Certification,IAAP WAS,Certification,https://www.accessibilityassociation.org/,Web Accessibility Specialist certification,EN,Ongoing,IAAP
+Mobile,iOS Accessibility Guide,Guide,https://www.apple.com/accessibility/voiceover/,Apple's comprehensive VoiceOver and accessibility documentation,EN,Ongoing,Apple
+Mobile,Android Accessibility Guide,Guide,https://support.google.com/accessibility/android,Google's TalkBack and accessibility features guide,EN,Ongoing,Google
+Native Mobile,Human Interface Guidelines (Apple),Guide,https://developer.apple.com/design/human-interface-guidelines/accessibility,Design guidelines for accessible iOS/macOS apps,EN,Ongoing,Apple
+Native Mobile,Material Design (Google),Guide,https://m3.material.io/foundations/accessible-design/overview,Accessibility guidelines for Android and Material Design,EN,Ongoing,Google
