@@ -53,6 +53,12 @@ python scripts/search.py handoff --phase Design --owner Designer
 
 # Theoretical models of disability
 python scripts/search.py models --keyword social
+
+# Resources (books, blogs, research, tools)
+python scripts/search.py resources --category Official
+python scripts/search.py resources --type Blog
+python scripts/search.py resources --authority W3C
+python scripts/search.py resources --keyword WCAG
 ```
 
 | File | Contents |
@@ -69,6 +75,7 @@ python scripts/search.py models --keyword social
 | `data/disability-models.csv` | Medical / Social / Biopsychosocial / CRPD / etc. |
 | `data/glossary-es.csv` | Spanish ↔ English a11y terminology (70+ terms) |
 | `data/legal-framework.csv` | 25+ jurisdictions: laws, standards, effective dates |
+| `data/resources.csv` | 50+ authoritative books, blogs, research papers, tools, standards |
 | `scripts/search.py` | CLI search across all databases |
 | `templates/audit-report.md` | Complete audit report template (fill-in) |
 | `templates/a11y-ci.yml` | GitHub Actions CI pipeline (axe + pa11y + Playwright + Lighthouse) |
