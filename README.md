@@ -1,33 +1,44 @@
-# wcag-accessibility
+<div align="center">
 
-> A Claude Code skill for web and mobile accessibility — grounded in WCAG 2.1 Level AA and Paul J. Adam's expertise.
+# ♿ wcag-accessibility-skill
+
+**A Claude Code skill for web and mobile accessibility — grounded in WCAG 2.1/2.2 Level AA and Paul J. Adam's expertise.**
+
+[![WCAG 2.2 AA](https://img.shields.io/badge/WCAG-2.2_AA-blueviolet?style=for-the-badge)](https://www.w3.org/WAI/standards-guidelines/wcag/)
+[![Claude Code](https://img.shields.io/badge/Claude_Code-Skill-D97757?style=for-the-badge&logo=anthropic&logoColor=white)](https://claude.ai)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](https://opensource.org/licenses/MIT)
+
+<br>
+
+[What it does](#-what-this-skill-does) • [Installation](#-installation) • [Searchable Databases](#-searchable-databases) • [Skill Coverage](#-skill-coverage) • [File Structure](#-file-structure)
+
+</div>
 
 ---
 
-## What This Skill Does
+## ✨ What This Skill Does
 
 This skill gives Claude comprehensive, actionable knowledge to help you:
 
-- **Audit** websites and apps against WCAG 2.0 / 2.1 / 2.2 and Section 508
-- **Build** accessible components: forms, modals, tabs, accordions, data tables, date pickers, autocompletes
-- **Implement** WAI-ARIA roles, states, and properties correctly
-- **Test** with real assistive technologies: NVDA, JAWS, VoiceOver, TalkBack
-- **Set up** automated accessibility testing in CI/CD (axe-core, Playwright, Jest)
-- **Evaluate** color contrast, keyboard navigation, focus management, and mobile touch targets
+* **🔍 Audit** websites and apps against WCAG 2.0 / 2.1 / 2.2 and Section 508.
+* **🏗️ Build** accessible components: forms, modals, tabs, accordions, data tables, date pickers, autocompletes.
+* **🎹 Implement** WAI-ARIA roles, states, and properties correctly.
+* **🎧 Test** with real assistive technologies: NVDA, JAWS, VoiceOver, TalkBack.
+* **⚙️ Set up** automated accessibility testing in CI/CD (axe-core, Playwright, Jest).
+* **🎨 Evaluate** color contrast, keyboard navigation, focus management, and mobile touch targets.
 
-Comes with **searchable CSV databases** and a **Python search utility** — inspired by the `ui-ux-pro-max` skill architecture.
+> Comes with **searchable CSV databases** and a **Python search utility** — inspired by the `ui-ux-pro-max` skill architecture.
 
 ---
 
-## Installation
+## 📦 Installation
 
 ### Claude Code (CLI / Desktop)
 
-**Fastest way** — one command:
+**The fastest way** — one command:
 
 ```bash
 npx claude-code-templates@latest --skill accessibility/wcag-accessibility
-```
 
 **Or clone the full repository:**
 
