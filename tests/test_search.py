@@ -49,6 +49,7 @@ class TestCSVIntegrity:
         "legal-framework.csv":         {"jurisdiction", "law"},
         "resources.csv":               {"Title", "URL", "Category"},
         "cognitive-accessibility.csv": {"pattern_id", "pattern_name", "user_group", "wcag_ref"},
+        "wcag3-draft.csv":             {"id", "level", "category", "criterion", "description", "notes"},
     }
 
     @pytest.mark.parametrize("filename,required_cols", EXPECTED_COLS.items())
@@ -112,6 +113,11 @@ class TestTableOutput:
         r = run("cognitive", "--keyword", "memory")
         assert r.returncode == 0
         assert "result(s)" in r.stdout
+
+    def test_wcag3_level(self):
+        r = run("wcag3", "--level", "Bronze")
+        assert r.returncode == 0
+        assert "Bronze" in r.stdout
 
     def test_no_results(self):
         r = run("wcag", "--keyword", "xyznonexistentterm12345")

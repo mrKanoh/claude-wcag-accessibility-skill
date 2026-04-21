@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Accessible Tabs — WCAG 2.2 AA</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: system-ui, -apple-system, sans-serif; padding: 2rem; background: #f9fafb; color: #111827; }
+    h1 { margin-bottom: .5rem; }
+    p.desc { margin-bottom: 2rem; color: #4b5563; font-size: .95rem; }
+    kbd { background:#e5e7eb;border-radius:4px;padding:.1rem .35rem;font-size:.85rem;border:1px solid #d1d5db; }
+
+    /* ── Tabs container ── */
+    .tabs-container { max-width: 600px; }
+
+    /* ── Tablist ── */
+    .tablist { display: flex; border-bottom: 2px solid #e5e7eb; margin-bottom: 1.5rem; gap: .5rem; }
+    
+    /* ── Tab buttons ── */
+    .tab-btn {
+      background: transparent; border: none; padding: .75rem 1.25rem; font-size: 1rem;
+      font-weight: 600; color: #6b7280; cursor: pointer; border-bottom: 3px solid transparent;
+      margin-bottom: -2px; /* Overlap the container border */
+    }
+    .tab-btn:hover { color: #1f2937; background: #f3f4f6; border-radius: 6px 6px 0 0; }
+    .tab-btn[aria-selected="true"] { color: #1d4ed8; border-bottom-color: #1d4ed8; }
+    .tab-btn:focus-visible { outline: 3px solid #1d4ed8; outline-offset: -3px; border-radius: 6px 6px 0 0; }
+
+    /* ── Tab panels ── */
+    .tabpanel { display: none; padding: 1rem; background: #fff; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,.1); line-height: 1.6; }
+    .tabpanel[data-active="true"] { display: block; animation: fadeIn .2s ease; }
+    .tabpanel:focus-visible { outline: 3px solid #1d4ed8; outline-offset: 2px; }
+
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  </style>
+</head>
+<body>
+
+<h1>Accessible Tabs</h1>
+<p class="desc">
+  WCAG 2.1/2.2 AA · WAI-ARIA Tabs Pattern. Keyboard: <kbd>Tab</kbd> to enter list · <kbd>←</kbd><kbd>→</kbd> switch tabs · <kbd>Home</kbd><kbd>End</kbd> jump.
+</p>
+
+<!--
+  WCAG KEY POINTS:
+  1. role="tablist" on the container.
+  2. role="tab" on the buttons.
+  3. aria-selected="true/false" indicates the active tab.
+  4. aria-controls="panel-id" links tab to panel.
+  5. tabindex="-1" on inactive tabs (roving tabindex).
+  6. role="tabpanel" on the content containers.
+  7. aria-labelledby="tab-id" on the panels.
+  8. Keyboard navigation: Left/Right arrows switch tabs automatically.
+-->
+
+<div class="tabs-container">
+  <div role="tablist" aria-label="Settings categories" class="tablist">
+    <button id="tab-profile" role="tab" aria-selected="true" aria-controls="panel-profile" class="tab-btn" tabindex="0">
+      Profile
+    </button>
+    <button id="tab-security" role="tab" aria-selected="false" aria-controls="panel-security" class="tab-btn" tabindex="-1">
+      Security
+    </button>
+    <button id="tab-notifications" role="tab" aria-selected="false" aria-controls="panel-notifications" class="tab-btn" tabindex="-1">
+      Notifications
+    </button>
+  </div>
+
+  <div id="panel-profile" role="tabpanel" tabindex="0" aria-labelledby="tab-profile" class="tabpanel" data-active="true">
+    <h2 style="font-size:1.1rem;margin-bottom:.5rem">Profile Settings</h2>
+    <p>Update your photo and personal details here.</p>
+    <div style="margin-top:1rem">
+      <label style="display:block;margin-bottom:.25rem;font-weight:600" for="name-input">Display Name</label>
+      <input type="text" id="name-input" value="Jane Doe" style="padding:.5rem;width:100%;max-width:300px;border:1px solid #d1d5db;border-radius:4px">
+    </div>
+  </div>
+
+  <div id="panel-security" role="tabpanel" tabindex="0" aria-labelledby="tab-security" class="tabpanel">
+    <h2 style="font-size:1.1rem;margin-bottom:.5rem">Security Settings</h2>
+    <p>Manage your password and 2-step verification preferences.</p>
+    <button style="margin-top:1rem;padding:.5rem 1rem;background:#111827;color:#fff;border:none;border-radius:4px;cursor:pointer">Enable 2FA</button>
+  </div>
+
+  <div id="panel-notifications" role="tabpanel" tabindex="0" aria-labelledby="tab-notifications" class="tabpanel">
+    <h2 style="font-size:1.1rem;margin-bottom:.5rem">Notification Preferences</h2>
+    <p>Choose what we email you about.</p>
+    <label style="display:flex;align-items:center;gap:.5rem;margin-top:1rem;cursor:pointer">
+      <input type="checkbox" checked> Receive marketing emails
+    </label>
+  </div>
+</div>
+
+<script>
+(function() {
+  const tabs = document.querySelectorAll('[role="tab"]');
+  const panels = document.querySelectorAll('[role="tabpanel"]');
+  const tablist = document.querySelector('[role="tablist"]');
+
+  let activeIndex = 0;
+
+  function activateTab(index) {
+    // Deactivate all
+    tabs.forEach(t => {
+      t.setAttribute('aria-selected', 'false');
+      t.setAttribute('tabindex', '-1');
+    });
+    panels.forEach(p => {
+      p.removeAttribute('data-active');
+    });
+
+    // Activate selected
+    activeIndex = index;
+    tabs[activeIndex].setAttribute('aria-selected', 'true');
+    tabs[activeIndex].setAttribute('tabindex', '0');
+    tabs[activeIndex].focus();
+    
+    // Show corresponding panel
+    const controls = tabs[activeIndex].getAttribute('aria-controls');
+    document.getElementById(controls).setAttribute('data-active', 'true');
+  }
+
+  tabs.forEach((tab, index) => {
+    tab.addEventListener('click', () => {
+      activateTab(index);
+    });
+
+    tab.addEventListener('keydown', e => {
+      let newIndex = activeIndex;
+
+      // Handle Arrow keys (Left/Right)
+      if (e.key === 'ArrowRight') {
+        newIndex = (activeIndex + 1) % tabs.length;
+      } else if (e.key === 'ArrowLeft') {
+        newIndex = (activeIndex - 1 + tabs.length) % tabs.length;
+      } else if (e.key === 'Home') {
+        newIndex = 0;
+      } else if (e.key === 'End') {
+        newIndex = tabs.length - 1;
+      }
+
+      if (newIndex !== activeIndex && ['ArrowRight', 'ArrowLeft', 'Home', 'End'].includes(e.key)) {
+        e.preventDefault(); // Prevent scrolling
+        activateTab(newIndex);
+      }
+    });
+  });
+})();
+</script>
+</body>
+</html>

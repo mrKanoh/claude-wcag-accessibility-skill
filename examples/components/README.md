@@ -63,6 +63,20 @@ Each file is self-contained (no external dependencies) and keyboard + screen-rea
 
 ---
 
+### 🗂️ [tabs.html](./tabs.html)
+**Pattern:** Tabs — WAI-ARIA Tabs Pattern  
+**WCAG SCs:** 1.3.1, 2.1.1, 2.4.3, 4.1.2
+
+| Feature | Implementation |
+|---------|---------------|
+| ARIA structure | `role="tablist"` → `role="tab"` → `role="tabpanel"` |
+| State | `aria-selected` reflects active tab |
+| Relationship | `aria-controls` links tab to panel; `aria-labelledby` links panel to tab |
+| Roving tabindex | Only the active tab has `tabindex="0"` |
+| Keyboard | ←/→ Arrow keys switch tabs with automatic activation; Home/End jump |
+
+---
+
 ### 🎥 [media-player.html](./media-player.html)
 **Pattern:** Custom Media Player  
 **WCAG SCs:** 1.2.2, 1.2.3, 1.2.5, 2.1.1, 2.4.7, 4.1.2

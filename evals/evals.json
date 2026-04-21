@@ -225,6 +225,168 @@
           "value": ["1.4.1", "color alone", "not just color", "icon", "text message"]
         }
       ]
+    },
+    {
+      "id": 9,
+      "prompt": "How do I make an SVG icon accessible? It's just a decorative checkmark.",
+      "expected_output": "Should mention adding `aria-hidden=\"true\"` or `focusable=\"false\"` for decorative SVGs.",
+      "assertions": [
+        {
+          "name": "mentions_aria_hidden",
+          "description": "Mentions aria-hidden='true'",
+          "type": "contains_any",
+          "value": ["aria-hidden=\"true\"", "aria-hidden='true'"]
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "prompt": "I'm using a `div` as a button: `<div onclick=\"submit()\">Submit</div>`. Is this accessible?",
+      "expected_output": "Should point out missing role, missing keyboard focus (tabindex), and missing keyboard event handlers (Enter/Space), and recommend using a native `<button>` instead.",
+      "assertions": [
+        {
+          "name": "recommends_native_button",
+          "description": "Recommends using a native button",
+          "type": "contains_any",
+          "value": ["<button>", "native button", "use a button"]
+        },
+        {
+          "name": "mentions_tabindex",
+          "description": "Mentions missing tabindex",
+          "type": "contains",
+          "value": "tabindex"
+        }
+      ]
+    },
+    {
+      "id": 11,
+      "prompt": "What is the difference between WCAG A, AA, and AAA?",
+      "expected_output": "Should explain that A is minimum, AA is the global standard/target, and AAA is strict and not applicable to all content.",
+      "assertions": [
+        {
+          "name": "explains_aa_is_standard",
+          "description": "Explains AA is the typical target",
+          "type": "contains_any",
+          "value": ["standard", "target", "most common", "required"]
+        }
+      ]
+    },
+    {
+      "id": 12,
+      "prompt": "How should I structure headings on a webpage?",
+      "expected_output": "Should mention using exactly one H1, not skipping heading levels, and using them for structural hierarchy, not just visual styling.",
+      "assertions": [
+        {
+          "name": "mentions_no_skipping",
+          "description": "Mentions not skipping levels",
+          "type": "contains_any",
+          "value": ["skip", "skipping", "sequential"]
+        }
+      ]
+    },
+    {
+      "id": 13,
+      "prompt": "What is an accessible name and how is it calculated?",
+      "expected_output": "Should explain the accessible name computation (aria-labelledby > aria-label > visible text/content).",
+      "assertions": [
+        {
+          "name": "mentions_computation",
+          "description": "Mentions calculation hierarchy",
+          "type": "contains_any",
+          "value": ["aria-labelledby", "aria-label", "text content", "computation"]
+        }
+      ]
+    },
+    {
+      "id": 14,
+      "prompt": "Is there a way to test accessibility automatically in CI/CD?",
+      "expected_output": "Should list tools like axe-core, pa11y, Lighthouse, or jest-axe.",
+      "assertions": [
+        {
+          "name": "mentions_tools",
+          "description": "Mentions CI tools",
+          "type": "contains_any",
+          "value": ["axe", "pa11y", "Lighthouse"]
+        }
+      ]
+    },
+    {
+      "id": 15,
+      "prompt": "How do I make a skip link?",
+      "expected_output": "Should provide code for a skip to main content link, hidden by default but visible on focus.",
+      "assertions": [
+        {
+          "name": "mentions_focus",
+          "description": "Mentions making it visible on focus",
+          "type": "contains_any",
+          "value": [":focus", "focus-visible"]
+        }
+      ]
+    },
+    {
+      "id": 16,
+      "prompt": "What are some cognitive accessibility best practices?",
+      "expected_output": "Should mention plain language, clear error messages, avoiding time limits, or consistent navigation.",
+      "assertions": [
+        {
+          "name": "mentions_plain_language",
+          "description": "Mentions plain language",
+          "type": "contains_any",
+          "value": ["plain language", "simple language", "readability"]
+        }
+      ]
+    },
+    {
+      "id": 17,
+      "prompt": "Do I need alt text on every image?",
+      "expected_output": "Should explain that decorative images need empty alt text (alt=\"\"), while informative images need descriptive alt text.",
+      "assertions": [
+        {
+          "name": "mentions_empty_alt",
+          "description": "Mentions empty alt for decorative",
+          "type": "contains_any",
+          "value": ["alt=\"\"", "empty alt", "null alt"]
+        }
+      ]
+    },
+    {
+      "id": 18,
+      "prompt": "What's the difference between aria-hidden and display: none?",
+      "expected_output": "Should explain that display: none hides from both visual users and screen readers, while aria-hidden hides ONLY from screen readers.",
+      "assertions": [
+        {
+          "name": "explains_visual_vs_sr",
+          "description": "Explains visual vs screen reader hiding",
+          "type": "contains_any",
+          "value": ["visual", "screen reader", "AT"]
+        }
+      ]
+    },
+    {
+      "id": 19,
+      "prompt": "How do I write a VPAT?",
+      "expected_output": "Should explain what a VPAT is (Voluntary Product Accessibility Template) and that it creates an ACR (Accessibility Conformance Report), detailing how to fill it out.",
+      "assertions": [
+        {
+          "name": "mentions_acr",
+          "description": "Mentions ACR",
+          "type": "contains_any",
+          "value": ["ACR", "Conformance Report"]
+        }
+      ]
+    },
+    {
+      "id": 20,
+      "prompt": "Are carousels accessible?",
+      "expected_output": "Should warn that carousels are often problematic, and must include a pause/stop button (WCAG 2.2.2), keyboard navigation, and ARIA live regions.",
+      "assertions": [
+        {
+          "name": "mentions_pause_button",
+          "description": "Mentions the need to pause",
+          "type": "contains_any",
+          "value": ["pause", "stop", "2.2.2"]
+        }
+      ]
     }
   ]
 }

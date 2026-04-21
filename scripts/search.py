@@ -33,6 +33,7 @@ if sys.stdout.encoding and sys.stdout.encoding.lower() not in ('utf-8', 'utf-8-s
 DATA_DIR = Path(__file__).parent.parent / "data"
 
 WCAG_CSV       = DATA_DIR / "wcag-criteria.csv"
+WCAG3_CSV      = DATA_DIR / "wcag3-draft.csv"
 ARIA_CSV       = DATA_DIR / "aria-patterns.csv"
 TOOLS_CSV      = DATA_DIR / "testing-tools.csv"
 KEYS_CSV       = DATA_DIR / "screen-reader-keys.csv"
@@ -50,6 +51,7 @@ COGNITIVE_CSV  = DATA_DIR / "cognitive-accessibility.csv"
 # All databases for cross-search
 ALL_DATABASES = {
     "wcag":        WCAG_CSV,
+    "wcag3":       WCAG3_CSV,
     "aria":        ARIA_CSV,
     "tools":       TOOLS_CSV,
     "keys":        KEYS_CSV,
@@ -172,6 +174,21 @@ def cmd_wcag(args: argparse.Namespace) -> None:
         print()
         for r in rows:
             print(f"  {r['id']} → {green(r['url'])}")
+
+
+# ── WCAG 3.0 Draft ────────────────────────────────────────────────────────────
+
+def cmd_wcag3(args: argparse.Namespace) -> None:
+    rows = load_csv(WCAG3_CSV)
+    if args.level:
+        rows = [r for r in rows if r["level"].upper() == args.level.upper()]
+    if args.category:
+        rows = [r for r in rows if args.category.lower() in r["category"].lower()]
+    if args.keyword:
+        rows = [r for r in rows if matches(r, args.keyword)]
+
+    cols = ["id", "level", "category", "criterion", "description", "notes"]
+    render(rows, cols, args.output, args.export)
 
 
 # ── ARIA ──────────────────────────────────────────────────────────────────────
@@ -436,6 +453,13 @@ def main() -> None:
     p_wcag.add_argument("--url", action="store_true", help="Show understanding URLs")
     add_common_args(p_wcag)
 
+    # wcag3
+    p_wcag3 = sub.add_parser("wcag3", help="Search WCAG 3.0 draft criteria")
+    p_wcag3.add_argument("--level", help="Bronze / Silver / Gold")
+    p_wcag3.add_argument("--category", help="e.g. Visual Contrast, Focus, Keyboard")
+    p_wcag3.add_argument("--keyword", help="Search across all fields")
+    add_common_args(p_wcag3)
+
     # aria
     p_aria = sub.add_parser("aria", help="Search ARIA component patterns")
     p_aria.add_argument("--component", help="Component name (e.g. modal, button, tabs)")
@@ -536,6 +560,7 @@ def main() -> None:
 
     dispatch = {
         "wcag":       cmd_wcag,
+        "wcag3":      cmd_wcag3,
         "aria":       cmd_aria,
         "tools":      cmd_tools,
         "keys":       cmd_keys,
