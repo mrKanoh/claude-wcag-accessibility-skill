@@ -1,0 +1,18 @@
+{
+  "standard": "WCAG2AA",
+  "includeNotices": false,
+  "includeWarnings": true,
+  "timeout": 30000,
+  "wait": 1000,
+  "urls": [
+    "http://localhost:3000",
+    "http://localhost:3000/login",
+    "http://localhost:3000/dashboard"
+  ],
+  "defaults": {
+    "timeout": 30000,
+    "standard": "WCAG2AA",
+    "runners": ["axe", "htmlcs"],
+    "ignore": []
+  }
+}

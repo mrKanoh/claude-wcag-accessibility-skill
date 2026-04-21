@@ -71,8 +71,11 @@ Run searches from the skill root:
 # All WCAG AA criteria
 python scripts/search.py wcag --level AA
 
-# Criteria about contrast
-python scripts/search.py wcag --keyword contrast --url
+# Criteria about contrast — output as JSON
+python scripts/search.py wcag --keyword contrast --output json
+
+# Export results to a file
+python scripts/search.py wcag --level AA --output json --export aa-criteria.json
 
 # Full ARIA spec for a modal dialog
 python scripts/search.py aria --component modal --detail
@@ -83,14 +86,16 @@ python scripts/search.py aria --keyword focus
 # Free screen reader tools for Windows
 python scripts/search.py tools --type screen-reader --platform Windows --free --url
 
-# All browser extensions
-python scripts/search.py tools --type browser-extension
-
 # NVDA shortcuts for heading navigation
 python scripts/search.py keys --reader NVDA --action heading
 
-# All VoiceOver shortcuts on macOS
-python scripts/search.py keys --reader VoiceOver --platform macOS
+# Cognitive accessibility patterns (COGA)
+python scripts/search.py cognitive --keyword memory
+python scripts/search.py cognitive --user-group ADHD
+
+# Cross-database search across all 14 databases at once
+python scripts/search.py all --keyword contrast
+python scripts/search.py all --keyword "focus" --output json
 
 # Semantic HTML reference
 python scripts/search.py semantic --element nav
@@ -110,11 +115,17 @@ python scripts/search.py handoff --phase Design --owner Designer
 # Models of disability
 python scripts/search.py models --keyword social
 
-# Curated resources (books, blogs, research, tools)
+# Legal framework by jurisdiction
+python scripts/search.py legal --jurisdiction EU
+python scripts/search.py legal --jurisdiction Spain
+
+# Curated resources
 python scripts/search.py resources --category "Official Standards"
 python scripts/search.py resources --type Blog --url
 python scripts/search.py resources --authority W3C
-python scripts/search.py resources --keyword "WCAG 2.2"
+
+# Spanish ↔ English glossary
+python scripts/search.py glossary --keyword contrast
 ```
 
 | File | Contents |
@@ -132,16 +143,30 @@ python scripts/search.py resources --keyword "WCAG 2.2"
 | `data/glossary-es.csv` | Spanish ↔ English a11y glossary (70+ terms with definitions) |
 | `data/legal-framework.csv` | 25+ jurisdictions: ADA, EAA, Section 508, AODA, LGPD, and more |
 | `data/resources.csv` | 50+ curated books, blogs, research papers, tools, and standards |
-| `scripts/search.py` | CLI search across all 13 databases |
+| `data/cognitive-accessibility.csv` | 20 COGA patterns: ADHD, dyslexia, memory, anxiety, autism |
+| `scripts/search.py` | CLI search across all **14 databases** · `--output json/csv` · `--export` · `all` subcommand |
 | `RESOURCES.md` | Human-readable bibliography — browse by category, W3C standards, academic research, etc. |
 | `templates/audit-report.md` | Fill-in audit report template |
 | `templates/a11y-ci.yml` | GitHub Actions pipeline (axe + pa11y + Playwright + Lighthouse) |
+| `templates/vpat-2.5-template.md` | Official VPAT 2.5 Rev WCAG (A/AA/AAA · Section 508 · EN 301 549) |
+| `templates/.pa11yci.json` | pa11y-ci config referenced by the CI pipeline |
+| `templates/.lighthouserc.json` | Lighthouse CI config with accessibility assertions |
 | `prompts/audit-component.md` | Prompt: audit a UI component |
 | `prompts/sc-to-acceptance-criteria.md` | Prompt: WCAG SC → Gherkin ACs |
 | `prompts/generate-alt-text.md` | Prompt: generate alt text |
 | `prompts/review-figma-handoff.md` | Prompt: review design handoff |
 | `prompts/summarize-audit-findings.md` | Prompt: exec summary from findings |
 | `prompts/generate-aria-pattern.md` | Prompt: generate any accessible widget |
+| `prompts/remediate-legacy-code.md` | Prompt: audit + fix legacy HTML/jQuery/Bootstrap |
+| `prompts/generate-vpat-entry.md` | Prompt: translate audit findings into VPAT ACR language |
+| `prompts/test-with-screen-reader.md` | Prompt: step-by-step NVDA/VoiceOver/TalkBack test scripts |
+| `prompts/mobile-a11y-checklist.md` | Prompt: React Native / SwiftUI / Jetpack Compose checklist |
+| `prompts/inclusive-ux-writing.md` | Prompt: plain language + inclusive terminology review |
+| `prompts/design-tokens-audit.md` | Prompt: audit Figma/Style Dictionary tokens against WCAG |
+| `examples/components/date-picker.html` | Date picker: dialog pattern, roving tabindex, Arrow keys, typed input |
+| `examples/components/toast-notifications.html` | Toast system: `role="status"` + `role="alert"`, reduced motion |
+| `examples/components/carousel.html` | Carousel: play/pause (WCAG 2.2.2), ARIA, auto-rotation, reduced motion |
+| `examples/components/tree-view.html` | Tree View: expand/collapse, roving tabindex, full keyboard nav |
 
 ---
 
@@ -255,10 +280,12 @@ Keep 13 searchable databases at your fingertips—in English and Spanish.
 
 ```
 wcag-accessibility/
-  ├─ SKILL.md                          ← Claude skill (loaded by Claude Code)
+  ├─ SKILL.md                          ← Claude skill (28 sections, loaded by Claude Code)
   ├─ README.md                         ← This file
+  ├─ CHANGELOG.md                      ← Version history
+  ├─ CONTRIBUTING.md                   ← Contribution guide
   │
-  ├─ data/                             ← 13 searchable databases
+  ├─ data/                             ← 14 searchable databases
   │  ├─ wcag-criteria.csv              WCAG 2.0/2.1 + WCAG 2.2 (70+ criteria)
   │  ├─ aria-patterns.csv              25+ component patterns: keyboard, focus, roles
   │  ├─ testing-tools.csv              30+ tools: axe, WAVE, Accessibility Insights, etc.
@@ -271,25 +298,51 @@ wcag-accessibility/
   │  ├─ disability-models.csv          Medical, Social, ICF, CRPD, Identity frameworks
   │  ├─ glossary-es.csv                Spanish ↔ English a11y glossary (70+ terms)
   │  ├─ legal-framework.csv            25+ jurisdictions: ADA, EAA, Section 508, AODA, LGPD
-  │  └─ resources.csv                  50+ curated books, blogs, research, tools
+  │  ├─ resources.csv                  50+ curated books, blogs, research, tools
+  │  └─ cognitive-accessibility.csv    20 COGA patterns: ADHD, dyslexia, memory, anxiety
   │
   ├─ RESOURCES.md                      ← Human-readable bibliography by category
   │
   ├─ scripts/
-  │  └─ search.py                      ← CLI to query all 13 databases
-  │                                       Usage: python search.py wcag --level AA
+  │  ├─ search.py                      ← CLI to query all 14 databases
+  │  │                                    --output json/csv, --export, 'all' subcommand
+  │  └─ generate-resources-md.py       ← Auto-generate RESOURCES.md from CSV
+  │
+  ├─ tests/
+  │  └─ test_search.py                 ← pytest suite (39 tests, all pass)
   │
   ├─ templates/                        ← Ready-to-use files
   │  ├─ audit-report.md                Fill-in audit report template
-  │  └─ a11y-ci.yml                    GitHub Actions CI pipeline (axe + Playwright + Lighthouse)
+  │  ├─ a11y-ci.yml                    GitHub Actions CI pipeline
+  │  ├─ vpat-2.5-template.md           VPAT 2.5 Rev WCAG (A/AA/AAA + S508 + EN 301 549)
+  │  ├─ .pa11yci.json                  pa11y-ci config
+  │  └─ .lighthouserc.json             Lighthouse CI config with a11y assertions
   │
-  └─ prompts/                          ← 6 Claude prompts ready to copy-paste
-     ├─ audit-component.md             Audit a UI component for WCAG issues
-     ├─ sc-to-acceptance-criteria.md   Convert WCAG success criteria → Gherkin
-     ├─ generate-alt-text.md           Generate descriptive alt text
-     ├─ review-figma-handoff.md        Review design files for a11y completeness
-     ├─ summarize-audit-findings.md    Create exec summary from audit results
-     └─ generate-aria-pattern.md       Generate accessible widget code
+  ├─ examples/
+  │  └─ components/                    ← 4 working accessible HTML components
+  │     ├─ date-picker.html            Dialog pattern, roving tabindex, Arrow keys
+  │     ├─ toast-notifications.html    Live regions: polite + assertive, reduced motion
+  │     ├─ carousel.html               Play/pause (WCAG 2.2.2), ARIA, auto-rotation
+  │     └─ tree-view.html             Expand/collapse, roving tabindex, full keyboard
+  │
+  ├─ prompts/                          ← 12 Claude prompts ready to copy-paste
+  │  ├─ audit-component.md
+  │  ├─ sc-to-acceptance-criteria.md
+  │  ├─ generate-alt-text.md
+  │  ├─ review-figma-handoff.md
+  │  ├─ summarize-audit-findings.md
+  │  ├─ generate-aria-pattern.md
+  │  ├─ remediate-legacy-code.md
+  │  ├─ generate-vpat-entry.md
+  │  ├─ test-with-screen-reader.md
+  │  ├─ mobile-a11y-checklist.md
+  │  ├─ inclusive-ux-writing.md
+  │  └─ design-tokens-audit.md
+  │
+  └─ .github/
+     └─ ISSUE_TEMPLATE/
+        ├─ bug_report.md
+        └─ feature_request.md
 ```
 
 ### How to Use Each Database
@@ -336,12 +389,23 @@ Additional standards and references:
 
 ## Contributing
 
-Improvements, corrections, and new component patterns are welcome. Open a PR referencing the relevant WCAG success criterion or WAI-ARIA pattern.
+Improvements, corrections, and new component patterns are welcome.
+See [`CONTRIBUTING.md`](./CONTRIBUTING.md) for full guidelines, commit conventions,
+component checklist, and how to run the tests.
 
-Areas that could grow:
-- More stack examples (Svelte, Angular, Next.js App Router, SwiftUI, Jetpack Compose)
-- Additional ARIA patterns (virtual lists, carousels, complex data grids)
-- Localization of Spanish-language a11y terminology
+```bash
+# Run the test suite
+pip install pytest
+pytest tests/ -v
+
+# Regenerate RESOURCES.md from the CSV
+python scripts/generate-resources-md.py
+```
+
+Quick areas that could grow:
+- More accessible component examples (data grid, rich text editor, combobox multi-select)
+- Additional ARIA patterns
+- More localization of Spanish-language a11y terminology
 - Remediation cost/effort estimation heuristics
 
 ---

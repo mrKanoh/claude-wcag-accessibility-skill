@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Accessible Carousel — WCAG 2.2 AA</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: system-ui, -apple-system, sans-serif; padding: 2rem; background: #f9fafb; }
+    h1 { margin-bottom: .5rem; }
+    p.desc { margin-bottom: 2rem; color: #4b5563; font-size: .95rem; }
+    .carousel { position: relative; max-width: 640px; background: #fff; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,.1); overflow: hidden; }
+    .carousel-slides { display: flex; transition: transform .4s ease; }
+    @media (prefers-reduced-motion: reduce) { .carousel-slides { transition: none; } }
+    .carousel-slide { min-width: 100%; padding: 3rem 2rem; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 1rem; }
+    .slide-emoji { font-size: 3rem; }
+    .slide-title { font-size: 1.4rem; font-weight: 700; color: #111827; }
+    .slide-text  { color: #374151; line-height: 1.6; max-width: 400px; }
+    .carousel-controls { display: flex; align-items: center; justify-content: space-between; padding: .75rem 1rem; border-top: 1px solid #e5e7eb; background: #f9fafb; }
+    .carousel-pause { background: none; border: 2px solid #6b7280; border-radius: 8px; padding: .4rem .8rem; cursor: pointer; font-size: .85rem; color: #374151; min-height: 44px; display: flex; align-items: center; gap: .4rem; }
+    .carousel-pause:hover { background: #f3f4f6; }
+    .carousel-pause:focus-visible { outline: 3px solid #1d4ed8; outline-offset: 2px; }
+    .carousel-btn { background: #1d4ed8; color: #fff; border: none; border-radius: 8px; width: 44px; height: 44px; cursor: pointer; font-size: 1.25rem; display: flex; align-items: center; justify-content: center; }
+    .carousel-btn:hover { background: #1e40af; }
+    .carousel-btn:focus-visible { outline: 3px solid #1d4ed8; outline-offset: 3px; }
+    .carousel-dots { display: flex; gap: .5rem; align-items: center; }
+    .dot { width: 10px; height: 10px; border-radius: 50%; border: 2px solid #1d4ed8; background: transparent; cursor: pointer; padding: 0; }
+    .dot[aria-current="true"] { background: #1d4ed8; }
+    .dot:focus-visible { outline: 3px solid #1d4ed8; outline-offset: 4px; }
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+  </style>
+</head>
+<body>
+<h1>Accessible Carousel</h1>
+<p class="desc">WCAG 2.1/2.2 AA. Keyboard: Arrow keys navigate, Space pauses. Auto-rotation pauses on hover, focus, or with prefers-reduced-motion.</p>
+
+<div class="carousel" id="my-carousel" role="region" aria-roledescription="carousel" aria-label="Accessibility tips">
+  <div class="carousel-slides" id="carousel-slides" aria-live="off" aria-atomic="false">
+    <div class="carousel-slide" role="group" aria-roledescription="slide" aria-label="1 of 4" id="slide-1">
+      <span class="slide-emoji" aria-hidden="true">🎹</span>
+      <h2 class="slide-title">Keyboard First</h2>
+      <p class="slide-text">Every interactive element must be reachable with keyboard alone. Test Tab, Enter, Space, and Arrow keys.</p>
+    </div>
+    <div class="carousel-slide" role="group" aria-roledescription="slide" aria-label="2 of 4" id="slide-2" aria-hidden="true">
+      <span class="slide-emoji" aria-hidden="true">🔍</span>
+      <h2 class="slide-title">Focus Visibility</h2>
+      <p class="slide-text">Focus indicators must have 3:1 contrast and cover ≥4 CSS px area — WCAG 2.4.11 and 2.4.13.</p>
+    </div>
+    <div class="carousel-slide" role="group" aria-roledescription="slide" aria-label="3 of 4" id="slide-3" aria-hidden="true">
+      <span class="slide-emoji" aria-hidden="true">🎨</span>
+      <h2 class="slide-title">Color Contrast</h2>
+      <p class="slide-text">Normal text needs 4.5:1, large text 3:1, and UI components 3:1 against adjacent backgrounds.</p>
+    </div>
+    <div class="carousel-slide" role="group" aria-roledescription="slide" aria-label="4 of 4" id="slide-4" aria-hidden="true">
+      <span class="slide-emoji" aria-hidden="true">📱</span>
+      <h2 class="slide-title">Touch Targets</h2>
+      <p class="slide-text">Minimum 24×24 CSS px (WCAG 2.5.8 AA) or 44×44 with no adjacent targets (WCAG 2.5.5 AAA).</p>
+    </div>
+  </div>
+
+  <div class="carousel-controls">
+    <button id="carousel-pause" class="carousel-pause" type="button" aria-label="Pause auto-rotation">
+      <span aria-hidden="true">⏸</span> Pause
+    </button>
+    <div style="display:flex;align-items:center;gap:.75rem">
+      <div class="carousel-dots" role="tablist" aria-label="Slides">
+        <button class="dot" role="tab" aria-controls="slide-1" aria-label="Slide 1" aria-current="true" aria-selected="true" tabindex="0"></button>
+        <button class="dot" role="tab" aria-controls="slide-2" aria-label="Slide 2" aria-current="false" aria-selected="false" tabindex="-1"></button>
+        <button class="dot" role="tab" aria-controls="slide-3" aria-label="Slide 3" aria-current="false" aria-selected="false" tabindex="-1"></button>
+        <button class="dot" role="tab" aria-controls="slide-4" aria-label="Slide 4" aria-current="false" aria-selected="false" tabindex="-1"></button>
+      </div>
+      <button id="carousel-prev" class="carousel-btn" type="button" aria-label="Previous slide">&#8592;</button>
+      <button id="carousel-next" class="carousel-btn" type="button" aria-label="Next slide">&#8594;</button>
+    </div>
+  </div>
+  <div id="carousel-status" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+</div>
+
+<script>
+(function () {
+  const TOTAL = 4;
+  const DELAY = 5000;
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let current = 0, isPlaying = !reduceMotion, timer = null;
+
+  const slidesEl = document.getElementById('carousel-slides');
+  const pauseBtn = document.getElementById('carousel-pause');
+  const prevBtn  = document.getElementById('carousel-prev');
+  const nextBtn  = document.getElementById('carousel-next');
+  const statusEl = document.getElementById('carousel-status');
+  const dots     = [...document.querySelectorAll('.dot')];
+  const slides   = [...document.querySelectorAll('.carousel-slide')];
+
+  function goTo(index, announce) {
+    current = ((index % TOTAL) + TOTAL) % TOTAL;
+    slidesEl.style.transform = `translateX(-${current * 100}%)`;
+    slides.forEach((s, i) => s.setAttribute('aria-hidden', i === current ? 'false' : 'true'));
+    dots.forEach((d, i) => {
+      const a = i === current;
+      d.setAttribute('aria-current', String(a));
+      d.setAttribute('aria-selected', String(a));
+      d.setAttribute('tabindex', a ? '0' : '-1');
+    });
+    if (announce !== false) {
+      statusEl.textContent = '';
+      requestAnimationFrame(() => {
+        statusEl.textContent = `Slide ${current + 1} of ${TOTAL}: ${slides[current].querySelector('.slide-title').textContent}`;
+      });
+    }
+  }
+
+  function startTimer() {
+    if (timer) clearInterval(timer);
+    slidesEl.setAttribute('aria-live', 'off');
+    timer = setInterval(() => goTo(current + 1, false), DELAY);
+  }
+  function stopTimer() {
+    if (timer) { clearInterval(timer); timer = null; }
+    slidesEl.setAttribute('aria-live', 'polite');
+  }
+  function setPaused(paused) {
+    isPlaying = !paused;
+    pauseBtn.innerHTML = paused ? '<span aria-hidden="true">▶</span> Play' : '<span aria-hidden="true">⏸</span> Pause';
+    pauseBtn.setAttribute('aria-label', paused ? 'Play auto-rotation' : 'Pause auto-rotation');
+    paused ? stopTimer() : startTimer();
+  }
+
+  pauseBtn.addEventListener('click', () => setPaused(isPlaying));
+  prevBtn.addEventListener('click', () => { setPaused(true); goTo(current - 1); });
+  nextBtn.addEventListener('click', () => { setPaused(true); goTo(current + 1); });
+
+  dots.forEach((dot, i) => {
+    dot.addEventListener('click', () => { setPaused(true); goTo(i); dot.focus(); });
+    dot.addEventListener('keydown', e => {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') { e.preventDefault(); const n = (i + 1) % TOTAL; setPaused(true); goTo(n); dots[n].focus(); }
+      if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   { e.preventDefault(); const p = (i - 1 + TOTAL) % TOTAL; setPaused(true); goTo(p); dots[p].focus(); }
+    });
+  });
+
+  document.getElementById('my-carousel').addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight') { e.preventDefault(); setPaused(true); goTo(current + 1); }
+    if (e.key === 'ArrowLeft')  { e.preventDefault(); setPaused(true); goTo(current - 1); }
+  });
+  document.getElementById('my-carousel').addEventListener('focusin',  () => { if (isPlaying) stopTimer(); });
+  document.getElementById('my-carousel').addEventListener('focusout', e => { if (isPlaying && !document.getElementById('my-carousel').contains(e.relatedTarget)) startTimer(); });
+  document.getElementById('my-carousel').addEventListener('mouseenter', () => { if (isPlaying) stopTimer(); });
+  document.getElementById('my-carousel').addEventListener('mouseleave', () => { if (isPlaying) startTimer(); });
+
+  goTo(0, false);
+  if (isPlaying) startTimer(); else setPaused(true);
+})();
+</script>
+</body>
+</html>

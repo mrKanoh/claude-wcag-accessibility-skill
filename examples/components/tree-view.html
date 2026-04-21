@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Accessible Tree View — WCAG 2.2 AA</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: system-ui, -apple-system, sans-serif; padding: 2rem; background: #f9fafb; }
+    h1 { margin-bottom: .5rem; }
+    p.desc { margin-bottom: 1.5rem; color: #4b5563; font-size: .95rem; }
+    kbd { background:#e5e7eb;border-radius:4px;padding:.1rem .35rem;font-size:.85rem;border:1px solid #d1d5db; }
+
+    /* ── Tree ── */
+    .tree-wrapper { background: #fff; border: 2px solid #e5e7eb; border-radius: 10px; padding: 1rem; max-width: 420px; }
+    [role="tree"] { list-style: none; }
+    [role="treeitem"] { list-style: none; }
+
+    /* Node button — the clickable/focusable part */
+    .node-btn {
+      display: flex; align-items: center; gap: .5rem;
+      padding: .4rem .6rem; border-radius: 6px;
+      background: none; border: none; cursor: pointer;
+      font-size: 1rem; width: 100%; text-align: left;
+      color: #111827;
+      min-height: 36px;
+    }
+    .node-btn:hover { background: #f3f4f6; }
+    .node-btn:focus-visible { outline: 3px solid #1d4ed8; outline-offset: 1px; }
+    .node-btn[aria-selected="true"] { background: #dbeafe; color: #1e40af; }
+
+    /* Expand icon */
+    .expand-icon { width: 1.1rem; font-size: .75rem; display: inline-block; text-align: center; flex-shrink: 0; color: #6b7280; }
+    .node-icon   { font-size: 1rem; flex-shrink: 0; }
+    .node-label  { flex: 1; }
+
+    /* Nested group */
+    [role="group"] {
+      list-style: none;
+      padding-left: 1.5rem;
+      border-left: 2px solid #e5e7eb;
+      margin-left: .85rem;
+    }
+    [role="group"][hidden] { display: none; }
+  </style>
+</head>
+<body>
+
+<h1>Accessible Tree View</h1>
+<p class="desc">
+  WCAG 2.1/2.2 AA · WAI-ARIA Tree Pattern.
+  <kbd>↑</kbd><kbd>↓</kbd> navigate · <kbd>→</kbd> expand / move into · <kbd>←</kbd> collapse / move up ·
+  <kbd>Home</kbd>/<kbd>End</kbd> first/last · <kbd>Enter</kbd>/<kbd>Space</kbd> select
+</p>
+
+<div class="tree-wrapper">
+  <!--
+    WCAG KEY POINTS:
+    1. role="tree" on the root <ul>
+    2. role="treeitem" on each <li>
+    3. role="group" on nested <ul> (child items)
+    4. aria-expanded="true|false" on treeitem that HAS children
+    5. No aria-expanded on leaf nodes
+    6. aria-selected on the selected node
+    7. aria-level, aria-setsize, aria-posinset on each node
+    8. Roving tabindex: only focused node has tabindex="0"
+    9. Keyboard: Up/Down move focus, Right expands/enters, Left collapses/exits, Home/End jump
+    10. aria-labelledby on the tree pointing to a visible heading
+  -->
+  <h2 id="tree-label" style="font-size:1rem;margin-bottom:.75rem;color:#374151">
+    📁 Project Files
+  </h2>
+  <ul role="tree" aria-labelledby="tree-label" id="my-tree">
+
+    <li role="treeitem" aria-expanded="true" aria-level="1" aria-setsize="3" aria-posinset="1" tabindex="0">
+      <button class="node-btn" type="button" aria-pressed="false">
+        <span class="expand-icon" aria-hidden="true">▾</span>
+        <span class="node-icon" aria-hidden="true">📂</span>
+        <span class="node-label">src</span>
+      </button>
+      <ul role="group">
+        <li role="treeitem" aria-expanded="false" aria-level="2" aria-setsize="2" aria-posinset="1" tabindex="-1">
+          <button class="node-btn" type="button">
+            <span class="expand-icon" aria-hidden="true">▸</span>
+            <span class="node-icon" aria-hidden="true">📂</span>
+            <span class="node-label">components</span>
+          </button>
+          <ul role="group" hidden>
+            <li role="treeitem" aria-level="3" aria-setsize="3" aria-posinset="1" tabindex="-1">
+              <button class="node-btn" type="button">
+                <span class="expand-icon" aria-hidden="true"></span>
+                <span class="node-icon" aria-hidden="true">📄</span>
+                <span class="node-label">Button.tsx</span>
+              </button>
+            </li>
+            <li role="treeitem" aria-level="3" aria-setsize="3" aria-posinset="2" tabindex="-1">
+              <button class="node-btn" type="button">
+                <span class="expand-icon" aria-hidden="true"></span>
+                <span class="node-icon" aria-hidden="true">📄</span>
+                <span class="node-label">Modal.tsx</span>
+              </button>
+            </li>
+            <li role="treeitem" aria-level="3" aria-setsize="3" aria-posinset="3" tabindex="-1">
+              <button class="node-btn" type="button">
+                <span class="expand-icon" aria-hidden="true"></span>
+                <span class="node-icon" aria-hidden="true">📄</span>
+                <span class="node-label">DatePicker.tsx</span>
+              </button>
+            </li>
+          </ul>
+        </li>
+        <li role="treeitem" aria-level="2" aria-setsize="2" aria-posinset="2" tabindex="-1">
+          <button class="node-btn" type="button">
+            <span class="expand-icon" aria-hidden="true"></span>
+            <span class="node-icon" aria-hidden="true">📄</span>
+            <span class="node-label">index.ts</span>
+          </button>
+        </li>
+      </ul>
+    </li>
+
+    <li role="treeitem" aria-expanded="false" aria-level="1" aria-setsize="3" aria-posinset="2" tabindex="-1">
+      <button class="node-btn" type="button">
+        <span class="expand-icon" aria-hidden="true">▸</span>
+        <span class="node-icon" aria-hidden="true">📂</span>
+        <span class="node-label">tests</span>
+      </button>
+      <ul role="group" hidden>
+        <li role="treeitem" aria-level="2" aria-setsize="2" aria-posinset="1" tabindex="-1">
+          <button class="node-btn" type="button">
+            <span class="expand-icon" aria-hidden="true"></span>
+            <span class="node-icon" aria-hidden="true">📄</span>
+            <span class="node-label">Button.test.tsx</span>
+          </button>
+        </li>
+        <li role="treeitem" aria-level="2" aria-setsize="2" aria-posinset="2" tabindex="-1">
+          <button class="node-btn" type="button">
+            <span class="expand-icon" aria-hidden="true"></span>
+            <span class="node-icon" aria-hidden="true">📄</span>
+            <span class="node-label">Modal.test.tsx</span>
+          </button>
+        </li>
+      </ul>
+    </li>
+
+    <li role="treeitem" aria-level="1" aria-setsize="3" aria-posinset="3" tabindex="-1">
+      <button class="node-btn" type="button">
+        <span class="expand-icon" aria-hidden="true"></span>
+        <span class="node-icon" aria-hidden="true">📄</span>
+        <span class="node-label">package.json</span>
+      </button>
+    </li>
+
+  </ul>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  const tree = document.getElementById('my-tree');
+
+  /** Get all visible treeitem LIs (not inside hidden groups) */
+  function getVisibleItems() {
+    return [...tree.querySelectorAll('[role="treeitem"]')].filter(el => {
+      // An item is visible if none of its ancestor groups are hidden
+      let parent = el.parentElement;
+      while (parent && parent !== tree) {
+        if (parent.hasAttribute('hidden')) return false;
+        parent = parent.parentElement;
+      }
+      return true;
+    });
+  }
+
+  /** The item that currently has tabindex=0 */
+  function getFocused() {
+    return tree.querySelector('[role="treeitem"][tabindex="0"]');
+  }
+
+  /** Move focus to a treeitem */
+  function moveFocus(item) {
+    getFocused()?.setAttribute('tabindex', '-1');
+    item.setAttribute('tabindex', '0');
+    item.focus();
+  }
+
+  /** Whether a treeitem has a nested group */
+  function hasChildren(item) {
+    return !!item.querySelector('[role="group"]');
+  }
+
+  /** Expand an item */
+  function expand(item) {
+    const group = item.querySelector('[role="group"]');
+    if (!group) return;
+    item.setAttribute('aria-expanded', 'true');
+    group.removeAttribute('hidden');
+    item.querySelector('.expand-icon').textContent = '▾';
+  }
+
+  /** Collapse an item */
+  function collapse(item) {
+    const group = item.querySelector('[role="group"]');
+    if (!group) return;
+    item.setAttribute('aria-expanded', 'false');
+    group.setAttribute('hidden', '');
+    item.querySelector('.expand-icon').textContent = '▸';
+  }
+
+  /** Select an item (single-select) */
+  function selectItem(item) {
+    tree.querySelectorAll('[role="treeitem"]').forEach(ti => {
+      ti.setAttribute('aria-selected', 'false');
+      ti.querySelector('.node-btn').setAttribute('aria-selected', 'false');
+    });
+    item.setAttribute('aria-selected', 'true');
+    item.querySelector('.node-btn').setAttribute('aria-pressed', 'true');
+  }
+
+  tree.addEventListener('keydown', e => {
+    const focused = getFocused();
+    if (!focused) return;
+    const items = getVisibleItems();
+    const idx   = items.indexOf(focused);
+
+    switch (e.key) {
+      case 'ArrowDown':
+        e.preventDefault();
+        if (idx < items.length - 1) moveFocus(items[idx + 1]);
+        break;
+
+      case 'ArrowUp':
+        e.preventDefault();
+        if (idx > 0) moveFocus(items[idx - 1]);
+        break;
+
+      case 'ArrowRight':
+        e.preventDefault();
+        if (hasChildren(focused)) {
+          if (focused.getAttribute('aria-expanded') === 'true') {
+            // Already open — move to first child
+            const firstChild = getVisibleItems().find(
+              (i, j) => j > idx && i.closest('[role="group"]')?.parentElement === focused
+            );
+            if (firstChild) moveFocus(firstChild);
+          } else {
+            expand(focused);
+          }
+        }
+        break;
+
+      case 'ArrowLeft':
+        e.preventDefault();
+        if (hasChildren(focused) && focused.getAttribute('aria-expanded') === 'true') {
+          collapse(focused);
+        } else {
+          // Move to parent treeitem
+          const parentGroup = focused.parentElement.closest('[role="group"]');
+          if (parentGroup) {
+            const parentItem = parentGroup.closest('[role="treeitem"]');
+            if (parentItem) moveFocus(parentItem);
+          }
+        }
+        break;
+
+      case 'Home':
+        e.preventDefault();
+        moveFocus(items[0]);
+        break;
+
+      case 'End':
+        e.preventDefault();
+        moveFocus(items[items.length - 1]);
+        break;
+
+      case 'Enter':
+      case ' ':
+        e.preventDefault();
+        if (hasChildren(focused)) {
+          if (focused.getAttribute('aria-expanded') === 'true') collapse(focused);
+          else expand(focused);
+        }
+        selectItem(focused);
+        break;
+
+      case '*':
+        // Expand all siblings at the same level
+        e.preventDefault();
+        items
+          .filter(i => i.getAttribute('aria-level') === focused.getAttribute('aria-level'))
+          .forEach(expand);
+        break;
+    }
+  });
+
+  // Click to expand/collapse and select
+  tree.addEventListener('click', e => {
+    const btn = e.target.closest('.node-btn');
+    if (!btn) return;
+    const item = btn.closest('[role="treeitem"]');
+    if (!item) return;
+    if (hasChildren(item)) {
+      if (item.getAttribute('aria-expanded') === 'true') collapse(item);
+      else expand(item);
+    }
+    selectItem(item);
+    moveFocus(item);
+  });
+
+  // Focus management: clicking the button triggers focus on the LI for keyboard
+  tree.addEventListener('focusin', e => {
+    const item = e.target.closest('[role="treeitem"]');
+    if (item && item !== getFocused()) {
+      getFocused()?.setAttribute('tabindex', '-1');
+      item.setAttribute('tabindex', '0');
+    }
+  });
+
+})();
+</script>
+</body>
+</html>

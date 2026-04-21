@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """
 wcag-accessibility skill search utility.
 
@@ -22,7 +23,12 @@ import sys
 import json
 import argparse
 import os
+import io
 from pathlib import Path
+
+# Force UTF-8 output on Windows (cp1252 can't encode many a11y symbols)
+if sys.stdout.encoding and sys.stdout.encoding.lower() not in ('utf-8', 'utf-8-sig'):
+    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
 
 DATA_DIR = Path(__file__).parent.parent / "data"
 
