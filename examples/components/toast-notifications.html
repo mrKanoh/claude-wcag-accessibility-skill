@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Accessible Toast / Notification System — WCAG 2.2 AA</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: system-ui, -apple-system, sans-serif; padding: 2rem; background: #f9fafb; }
+    h1 { margin-bottom: 1rem; }
+    .demo-buttons { display: flex; gap: .75rem; flex-wrap: wrap; margin-bottom: 2rem; }
+    button {
+      padding: .6rem 1.2rem; border-radius: 8px; border: none;
+      cursor: pointer; font-size: 1rem; font-weight: 500;
+      min-height: 44px; min-width: 44px;
+    }
+    button:focus-visible { outline: 3px solid #1d4ed8; outline-offset: 3px; }
+
+    /* ── Toast region ── */
+    .toast-region {
+      position: fixed; bottom: 1.5rem; right: 1.5rem;
+      display: flex; flex-direction: column; gap: .75rem;
+      z-index: 9999; max-width: 360px; width: calc(100% - 3rem);
+    }
+
+    /* ── Individual toast ── */
+    .toast {
+      display: flex; align-items: flex-start; gap: .75rem;
+      background: #fff; border-radius: 10px;
+      box-shadow: 0 4px 20px rgba(0,0,0,.15);
+      padding: 1rem; border-left: 4px solid #6b7280;
+      animation: slideIn .25s ease;
+    }
+    .toast[data-type="success"] { border-left-color: #16a34a; }
+    .toast[data-type="error"]   { border-left-color: #dc2626; }
+    .toast[data-type="warning"] { border-left-color: #d97706; }
+    .toast[data-type="info"]    { border-left-color: #1d4ed8; }
+
+    .toast-icon { font-size: 1.25rem; flex-shrink: 0; line-height: 1.4; }
+    .toast-body { flex: 1; min-width: 0; }
+    .toast-title { font-weight: 600; font-size: .95rem; color: #111827; }
+    .toast-message { font-size: .875rem; color: #374151; margin-top: .2rem; }
+
+    /* ── Dismiss button ── */
+    .toast-dismiss {
+      background: none; border: 2px solid transparent; border-radius: 6px;
+      color: #6b7280; cursor: pointer; padding: .2rem; line-height: 1;
+      font-size: 1.1rem; flex-shrink: 0;
+      min-width: 28px; min-height: 28px;
+    }
+    .toast-dismiss:hover { color: #111827; background: #f3f4f6; }
+    .toast-dismiss:focus-visible { outline: 3px solid #1d4ed8; outline-offset: 2px; }
+
+    /* ── Progress bar ── */
+    .toast-progress {
+      height: 3px; border-radius: 0 0 0 6px;
+      background: currentColor; opacity: .3;
+      margin: .5rem -1rem -1rem -1rem;
+      transform-origin: left;
+    }
+
+    @keyframes slideIn {
+      from { transform: translateX(110%); opacity: 0; }
+      to   { transform: translateX(0);    opacity: 1; }
+    }
+    @keyframes slideOut {
+      from { transform: translateX(0); opacity: 1; }
+      to   { transform: translateX(110%); opacity: 0; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .toast { animation: none; }
+    }
+  </style>
+</head>
+<body>
+
+<h1>Accessible Toast / Notification System</h1>
+<p style="margin-bottom:1.5rem">
+  Live regions announce messages to screen readers without moving focus.
+  Toasts are dismissible by keyboard and auto-dismiss after 5s.
+  Reduced motion is respected.
+</p>
+
+<div class="demo-buttons">
+  <button onclick="showToast('success','File saved','Your changes have been saved successfully.')" style="background:#dcfce7;color:#166534">
+    ✅ Success
+  </button>
+  <button onclick="showToast('error','Upload failed','The file exceeds the 10 MB limit. Choose a smaller file.')" style="background:#fee2e2;color:#991b1b">
+    ❌ Error
+  </button>
+  <button onclick="showToast('warning','Session expiring','Your session will expire in 5 minutes. Save your work.')" style="background:#fef9c3;color:#92400e">
+    ⚠️ Warning
+  </button>
+  <button onclick="showToast('info','Update available','A new version is available. Refresh to update.')" style="background:#dbeafe;color:#1e40af">
+    ℹ️ Info
+  </button>
+</div>
+
+<!--
+  WCAG KEY POINTS:
+  1. role="status" with aria-live="polite" for non-critical messages (success, info, warning)
+  2. role="alert"  with aria-live="assertive" for critical errors
+  3. aria-atomic="true" so the FULL message is re-announced on update
+  4. aria-label on the region for landmark navigation
+  5. Each toast has a dismiss button with an accessible name that includes the message context
+-->
+
+<!-- Polite region: success, info, warning -->
+<div
+  id="toast-region-polite"
+  class="toast-region"
+  role="status"
+  aria-live="polite"
+  aria-atomic="false"
+  aria-label="Notifications"
+></div>
+
+<!-- Assertive region: errors only -->
+<div
+  id="toast-region-assertive"
+  class="toast-region"
+  style="bottom: calc(1.5rem + 80px)"
+  role="alert"
+  aria-live="assertive"
+  aria-atomic="true"
+  aria-label="Error notifications"
+></div>
+
+<script>
+(function () {
+  'use strict';
+
+  const ICONS = { success: '✅', error: '❌', warning: '⚠️', info: 'ℹ️' };
+  const AUTO_DISMISS_MS = 5000;
+
+  let toastCount = 0;
+
+  window.showToast = function (type, title, message, duration = AUTO_DISMISS_MS) {
+    const id = `toast-${++toastCount}`;
+    const isError = type === 'error';
+    const region = document.getElementById(
+      isError ? 'toast-region-assertive' : 'toast-region-polite'
+    );
+
+    // Build toast element
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.id = id;
+    toast.setAttribute('data-type', type);
+    toast.setAttribute('role', isError ? 'alertdialog' : 'group');
+    if (isError) toast.setAttribute('aria-modal', 'false');
+    // Don't add aria-labelledby here: the live region re-announces everything
+
+    toast.innerHTML = `
+      <span class="toast-icon" aria-hidden="true">${ICONS[type] || 'ℹ️'}</span>
+      <div class="toast-body">
+        <div class="toast-title" id="${id}-title">${escapeHtml(title)}</div>
+        ${message ? `<div class="toast-message" id="${id}-msg">${escapeHtml(message)}</div>` : ''}
+      </div>
+      <button
+        class="toast-dismiss"
+        type="button"
+        aria-label="Dismiss: ${escapeHtml(title)}"
+      >×</button>
+      <div class="toast-progress" aria-hidden="true" style="color: ${progressColor(type)}"></div>
+    `;
+
+    region.appendChild(toast);
+
+    // Animate progress bar
+    const progress = toast.querySelector('.toast-progress');
+    const shouldAnimate = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    let timeoutId;
+    if (shouldAnimate) {
+      progress.style.transition = `transform ${duration}ms linear`;
+      requestAnimationFrame(() => { progress.style.transform = 'scaleX(1)'; });
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => { progress.style.transform = 'scaleX(0)'; });
+      });
+    }
+
+    // Auto-dismiss
+    if (duration > 0) {
+      timeoutId = setTimeout(() => dismissToast(toast), duration);
+    }
+
+    // Dismiss button
+    toast.querySelector('.toast-dismiss').addEventListener('click', () => {
+      clearTimeout(timeoutId);
+      dismissToast(toast);
+    });
+
+    // Pause auto-dismiss on hover / focus
+    toast.addEventListener('mouseenter', () => {
+      clearTimeout(timeoutId);
+      if (progress) progress.style.animationPlayState = 'paused';
+    });
+    toast.addEventListener('mouseleave', () => {
+      timeoutId = setTimeout(() => dismissToast(toast), 1000);
+    });
+    toast.addEventListener('focusin', () => clearTimeout(timeoutId));
+    toast.addEventListener('focusout', () => {
+      timeoutId = setTimeout(() => dismissToast(toast), 1000);
+    });
+  };
+
+  function dismissToast(toast) {
+    const shouldAnimate = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (shouldAnimate) {
+      toast.style.animation = 'slideOut .2s ease forwards';
+      toast.addEventListener('animationend', () => toast.remove(), { once: true });
+    } else {
+      toast.remove();
+    }
+  }
+
+  function progressColor(type) {
+    return { success: '#16a34a', error: '#dc2626', warning: '#d97706', info: '#1d4ed8' }[type] || '#6b7280';
+  }
+
+  function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+})();
+</script>
+
+</body>
+</html>

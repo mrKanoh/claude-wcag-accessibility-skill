@@ -1154,6 +1154,7 @@ Key terms for Spanish-speaking teams:
 |------|---------|
 | `templates/audit-report.md` | Complete audit report with finding blocks, severity scale, conformance table, retest plan |
 | `templates/a11y-ci.yml` | GitHub Actions pipeline: jest-axe + axe CLI + pa11y-ci + Playwright + Lighthouse |
+| `templates/vpat-2.5-template.md` | Official VPAT 2.5 Rev WCAG — covers WCAG 2.x (A/AA/AAA), Section 508, EN 301 549 |
 
 ### Prompts for Claude (copy & paste)
 
@@ -1165,6 +1166,19 @@ Key terms for Spanish-speaking teams:
 | `prompts/review-figma-handoff.md` | Review a design handoff for a11y gaps before dev |
 | `prompts/summarize-audit-findings.md` | Exec-friendly summary of raw findings with 90-day plan |
 | `prompts/generate-aria-pattern.md` | Generate production-ready accessible widget in any framework |
+| `prompts/remediate-legacy-code.md` | Audit + fix legacy HTML/jQuery/Bootstrap code for accessibility |
+| `prompts/generate-vpat-entry.md` | Translate audit findings into VPAT ACR language |
+| `prompts/test-with-screen-reader.md` | Generate step-by-step NVDA/VoiceOver/TalkBack test scripts |
+| `prompts/mobile-a11y-checklist.md` | React Native, SwiftUI, Jetpack Compose accessibility checklist |
+| `prompts/inclusive-ux-writing.md` | Review UI copy for plain language and inclusive terminology |
+| `prompts/design-tokens-audit.md` | Audit Figma/Style Dictionary tokens against WCAG contrast requirements |
+
+### Accessible component examples (`examples/components/`)
+
+| File | What it demonstrates |
+|------|---------------------|
+| `examples/components/date-picker.html` | Full date picker: dialog pattern, roving tabindex, Arrow/Page/Home/End keys, typed input, live region errors |
+| `examples/components/toast-notifications.html` | Toast system: `role="status"` (polite) + `role="alert"` (assertive), dismiss, reduced-motion support |
 
 ---
 
@@ -1243,6 +1257,379 @@ Key terms for Spanish-speaking teams:
 
 ---
 
+## 25. Vue 3 Accessibility Examples
+
+### Accessible reactive form (Composition API)
+```vue
+<script setup lang="ts">
+import { ref, computed } from 'vue';
+
+const email = ref('');
+const touched = ref(false);
+const isInvalid = computed(() => touched.value && !/^[^@]+@[^@]+\.[^@]+$/.test(email.value));
+const errorId = 'email-error';
+const hintId  = 'email-hint';
+</script>
+
+<template>
+  <form @submit.prevent="handleSubmit" novalidate>
+    <div>
+      <label for="email">
+        Email address <span aria-hidden="true">*</span>
+      </label>
+      <input
+        id="email"
+        v-model="email"
+        type="email"
+        autocomplete="email"
+        aria-required="true"
+        :aria-invalid="isInvalid || undefined"
+        :aria-describedby="[hintId, isInvalid ? errorId : ''].filter(Boolean).join(' ')"
+        @blur="touched = true"
+      />
+      <span :id="hintId">We will never share your email.</span>
+      <span
+        v-if="isInvalid"
+        :id="errorId"
+        role="alert"
+      >
+        Enter a valid email address.
+      </span>
+    </div>
+    <button type="submit" :disabled="isInvalid">Subscribe</button>
+  </form>
+</template>
+```
+
+### Accessible modal (Vue 3 + Teleport)
+```vue
+<script setup lang="ts">
+import { ref, watch, nextTick } from 'vue';
+const props = defineProps<{ open: boolean }>();
+const emit  = defineEmits<{ (e: 'close'): void }>();
+const closeBtn = ref<HTMLButtonElement | null>(null);
+
+watch(() => props.open, async (val) => {
+  if (val) {
+    await nextTick();
+    closeBtn.value?.focus(); // Move focus into dialog
+  }
+});
+
+function handleKeydown(e: KeyboardEvent) {
+  if (e.key === 'Escape') emit('close');
+}
+</script>
+
+<template>
+  <!-- Teleport out of current DOM tree so aria-modal works correctly -->
+  <Teleport to="body">
+    <div
+      v-if="open"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modal-title"
+      aria-describedby="modal-desc"
+      @keydown="handleKeydown"
+    >
+      <h2 id="modal-title">Confirm action</h2>
+      <p id="modal-desc">This cannot be undone.</p>
+      <button ref="closeBtn" @click="emit('close')">Cancel</button>
+      <button class="primary">Confirm</button>
+    </div>
+    <!-- Backdrop -->
+    <div v-if="open" aria-hidden="true" @click="emit('close')" />
+  </Teleport>
+</template>
+```
+
+### Accessible toggle button (Vue 3)
+```vue
+<script setup lang="ts">
+import { ref } from 'vue';
+const isDark = ref(false);
+function toggle() {
+  isDark.value = !isDark.value;
+  document.documentElement.dataset.theme = isDark.value ? 'dark' : 'light';
+}
+</script>
+
+<template>
+  <button
+    type="button"
+    :aria-pressed="isDark"
+    :aria-label="isDark ? 'Switch to light mode' : 'Switch to dark mode'"
+    @click="toggle"
+  >
+    {{ isDark ? '☀️' : '🌙' }}
+  </button>
+</template>
+```
+
+### Live region (Vue 3)
+```vue
+<script setup lang="ts">
+import { ref } from 'vue';
+const announcement = ref('');
+function save() {
+  // ... save logic ...
+  announcement.value = 'Document saved successfully.';
+  setTimeout(() => { announcement.value = ''; }, 3000);
+}
+</script>
+
+<template>
+  <!-- Visually hidden live region -->
+  <div aria-live="polite" aria-atomic="true" class="sr-only">
+    {{ announcement }}
+  </div>
+  <button type="button" @click="save">Save</button>
+</template>
+```
+
+---
+
+## 26. React Native Accessibility
+
+React Native accessibility maps to the same WCAG principles but uses platform-specific APIs.
+
+### Core props
+```tsx
+import {
+  View, Text, TouchableOpacity, TextInput,
+  AccessibilityInfo, findNodeHandle
+} from 'react-native';
+
+// ── Accessible card (combines children into one focus target)
+function CourseCard({ title, instructor, isCompleted }: Props) {
+  return (
+    <View
+      accessible={true}                          // combine into single focus
+      accessibilityLabel={`${title}, by ${instructor}`}
+      accessibilityHint={isCompleted ? undefined : 'Double-tap to open course'}
+      accessibilityRole="button"
+      accessibilityState={{ selected: isCompleted }}
+    >
+      <Text>{title}</Text>
+      <Text>{instructor}</Text>
+    </View>
+  );
+}
+
+// ── Accessible text input with error
+function EmailInput({ value, onChange, error }: InputProps) {
+  return (
+    <View>
+      <Text nativeID="email-label">Email address</Text>
+      <TextInput
+        value={value}
+        onChangeText={onChange}
+        accessibilityLabelledBy="email-label"
+        accessibilityInvalidated={!!error}        // maps to aria-invalid
+        accessibilityErrorMessage={error}          // RN 0.74+
+        keyboardType="email-address"
+        autoComplete="email"
+        textContentType="emailAddress"            // iOS autofill
+      />
+      {error && (
+        <Text
+          accessibilityLiveRegion="assertive"     // announce immediately
+          accessibilityRole="alert"
+        >
+          {error}
+        </Text>
+      )}
+    </View>
+  );
+}
+```
+
+### Touch targets (WCAG 2.5.8 equivalent)
+```tsx
+import { StyleSheet } from 'react-native';
+
+const styles = StyleSheet.create({
+  // iOS: minimum 44x44 pt; Android: minimum 48x48 dp
+  touchable: {
+    minWidth: 44,
+    minHeight: 44,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  // hitSlop expands tap area without changing visual size
+  // Use when the visual element must be smaller
+});
+
+// Use hitSlop for small icons
+<TouchableOpacity
+  hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
+  accessibilityRole="button"
+  accessibilityLabel="Delete item"
+/>
+```
+
+### Dynamic Type (font scaling)
+```tsx
+import { Text } from 'react-native';
+
+// ❌ Never: fixed font sizes block Dynamic Type
+<Text style={{ fontSize: 16 }}>Static text</Text>
+
+// ✅ Allow: system font that scales with user preference
+<Text>Default text</Text>  // inherits system font size
+
+// ✅ If you must set size, allow scaling
+<Text allowFontScaling={true} style={{ fontSize: 16 }}>Scalable text</Text>
+
+// ✅ maxFontSizeMultiplier: prevent runaway scaling in tight UIs
+<Text maxFontSizeMultiplier={1.5} style={{ fontSize: 14 }}>Compact text</Text>
+```
+
+### Reduce Motion
+```tsx
+import { useEffect, useState } from 'react';
+import { AccessibilityInfo } from 'react-native';
+import Animated, { useSharedValue, withTiming, withSpring } from 'react-native-reanimated';
+
+function AnimatedCard() {
+  const [reduceMotion, setReduceMotion] = useState(false);
+  const opacity = useSharedValue(0);
+
+  useEffect(() => {
+    AccessibilityInfo.isReduceMotionEnabled().then(setReduceMotion);
+    const sub = AccessibilityInfo.addEventListener('reduceMotionChanged', setReduceMotion);
+    return () => sub.remove();
+  }, []);
+
+  useEffect(() => {
+    opacity.value = reduceMotion
+      ? withTiming(1, { duration: 0 })   // instant
+      : withSpring(1);                    // animated
+  }, [reduceMotion]);
+
+  return <Animated.View style={{ opacity }} />;
+}
+```
+
+### Focus management (screen transition)
+```tsx
+import { useRef, useEffect } from 'react';
+import { View, AccessibilityInfo, findNodeHandle } from 'react-native';
+
+function NewScreen() {
+  const headingRef = useRef<View>(null);
+
+  useEffect(() => {
+    // Move VoiceOver/TalkBack focus to screen heading on mount
+    const node = findNodeHandle(headingRef.current);
+    if (node) AccessibilityInfo.setAccessibilityFocus(node);
+  }, []);
+
+  return (
+    <View>
+      <View
+        ref={headingRef}
+        accessible={true}
+        accessibilityRole="header"
+      >
+        <Text>Settings</Text>
+      </View>
+    </View>
+  );
+}
+```
+
+> Quick search: `python scripts/search.py keys --reader TalkBack` for TalkBack gestures,
+> `python scripts/search.py keys --reader VoiceOver --platform iOS` for VoiceOver iOS.
+
+---
+
+## 27. Cognitive Accessibility (COGA)
+
+Cognitive, language, and learning disabilities affect ~15% of people. WCAG addresses them partially — COGA supplemental guidance fills the gaps.
+
+### Top 10 COGA design patterns
+
+| Pattern | What to do | WCAG mapping |
+|---------|-----------|---------------|
+| Plain language | Reading level ≤ grade 8; short sentences; active voice | 3.1.5 (AAA) |
+| Familiar patterns | Standard nav location; known icons; no novel interactions | 3.2.3 / 3.2.4 |
+| No time limits | Extend or remove timers; show countdown with `aria-live` | 2.2.1 / 2.2.3 |
+| Reduce cognitive load | ≤7 nav items; progressive disclosure; no autoplay | 3.2.2 |
+| Support memory | Pre-fill known data; breadcrumbs; undo; don't re-ask (3.3.7) | 3.3.7 (WCAG 2.2) |
+| Clear error recovery | Say what happened + exactly what to do; inline validation | 3.3.1 / 3.3.3 |
+| Visible labels | `<label>` always visible; placeholder ≠ label | 3.3.2 |
+| No distractions | `prefers-reduced-motion`; no autoplay audio | 2.2.2 / 2.3.1 |
+| Consistent vocabulary | Same word for same thing; glossary available | 3.1.3 (AAA) |
+| Multiple input modes | Text + autocomplete; voice input; no drag-only (2.5.7) | 2.1.1 / 2.5.7 |
+
+### Accessible authentication (WCAG 3.3.8 — WCAG 2.2)
+```html
+<!-- ❌ Cognitive function test — fails 3.3.8 -->
+<p>Type the characters you see in the image:</p>
+<img src="captcha.png" alt="">
+<input type="text" name="captcha">
+
+<!-- ✅ Alternatives that pass 3.3.8 -->
+<!-- 1. Allow paste into password fields -->
+<input type="password" autocomplete="current-password">
+<!-- 2. Use WebAuthn (passkeys) -->
+<!-- 3. Use OTP sent to email/phone -->
+<!-- 4. If CAPTCHA is unavoidable: provide accessible alternative (audio CAPTCHA) -->
+```
+
+> Full pattern database: `data/cognitive-accessibility.csv` (20 patterns)
+> Search: `python scripts/search.py cognitive --keyword memory`
+
+---
+
+## 28. WCAG 3.0 — What's Coming
+
+WCAG 3.0 ("Silver") is under development by the W3C Accessibility Guidelines Working Group. It is **not yet a standard** — WCAG 2.1/2.2 AA remains the compliance target.
+
+### Key structural changes
+
+| WCAG 2.x | WCAG 3.0 |
+|----------|-----------|
+| Success Criteria (pass/fail binary) | **Outcomes** with multiple "Methods" and "Tests" |
+| Level A / AA / AAA | Graduated score (Bronze / Silver / Gold) |
+| Focused on web content | Expanded to apps, emerging tech, XR, AI |
+| Static document | Living standard with modular updates |
+
+### APCA (Advanced Perceptual Contrast Algorithm)
+
+WCAG 3.0 will replace the current contrast ratio (WCAG 1.4.3) with APCA, which accounts for:
+- **Polarity**: light text on dark bg vs dark on light (treated differently)
+- **Font size AND weight together** (not just size threshold)
+- **Spatial frequency**: the visual complexity of the typeface
+
+**APCA key values (Lc = Lightness Contrast):**
+
+| Use case | APCA Lc threshold |
+|----------|------------------|
+| Body text (≥14pt regular) | Lc 75 |
+| Large heading (≥24pt regular) | Lc 60 |
+| Large bold heading (≥18pt bold) | Lc 45 |
+| UI components (borders, icons) | Lc 30 |
+| Decorative / disabled | Lc 0 (exempt) |
+
+### How to prepare now
+1. **Keep targeting WCAG 2.1/2.2 AA** — no migration needed until WCAG 3.0 is finalized (est. 2026–2028).
+2. **Audit with APCA as a supplement**: use the [APCA Contrast Calculator](https://www.myndex.com/APCA/) alongside your WCAG 1.4.3 checks. If something passes 2.x but feels wrong visually, APCA often explains why.
+3. **Modular thinking**: WCAG 3.0 allows teams to achieve "Bronze" quickly on the most impactful criteria before tackling Silver/Gold — plan your roadmap accordingly.
+4. **Track the draft**: https://www.w3.org/TR/wcag-3.0/
+
+```js
+// APCA calculation (using the apca-w3 npm package)
+import { calcAPCA } from 'apca-w3';
+
+const lc = calcAPCA('#1a1a1a', '#ffffff'); // text color, bg color
+console.log(`APCA Lc: ${Math.abs(lc).toFixed(1)}`); // e.g. 108.1 (excellent)
+// Target: |Lc| >= 75 for body text
+```
+
+---
+
 ## Notes for Claude
 
 1. **Default to WCAG 2.1 AA** and surface **WCAG 2.2 additions** when relevant (focus obscured, target size, drag alternatives, accessible auth, redundant entry, consistent help).
@@ -1255,9 +1642,10 @@ Key terms for Spanish-speaking teams:
 8. **Language**: prefer person-first or identity-first per community norms; never pity-based framing.
 9. **When asked about KPIs, handoff, audit, inclusive research, typography, or color palettes**, use the relevant sections and CSVs — these are strong differentiators versus generic a11y advice.
 10. **Reply in the user's language** (English or Spanish) when they ask in Spanish; use `data/glossary-es.csv` for terminology. Terms like "lector de pantalla", "criterios de éxito", "tecnologías asistivas" are preferred.
-11. **Stack examples**: use section 18 for Next.js App Router, Angular, Svelte, Astro, SolidJS; section 19 for SwiftUI and Jetpack Compose.
+11. **Stack examples**: section 18 → Next.js, Angular, Svelte, Astro, SolidJS; section 19 → SwiftUI, Jetpack Compose; section 25 → Vue 3; section 26 → React Native.
 12. **Legal questions**: cite `data/legal-framework.csv`; always highlight the **EAA 28 June 2025** deadline for EU-facing products.
-13. **Alternative input**: when asked about motor/cognitive accessibility, cover switch access, voice control (Voice Access / Dragon), eye tracking, and COGA — see section 21.
-14. **User preference media queries**: recommend prefers-reduced-motion, prefers-contrast, forced-colors, prefers-reduced-transparency in every animation/color/theme discussion — see section 20.
-15. **Templates & prompts**: point users to `templates/` and `prompts/` for ready-to-use assets. The prompts in `prompts/` are designed to be pasted into Claude directly.
-16. **External Resources**: refer users to [`RESOURCES.md`](./RESOURCES.md) for comprehensive curated bibliography of books, blogs, research papers, tools, and legal frameworks — updated 2025 with WCAG 2.2, EAA deadline, and peer-reviewed studies.
+13. **Cognitive accessibility**: when ADHD, dyslexia, memory, or anxiety is mentioned, use section 27 and `data/cognitive-accessibility.csv`.
+14. **WCAG 3.0**: mention only as "in development" — WCAG 2.1/2.2 AA is still the standard. Point to section 28 for APCA details.
+15. **User preference media queries**: recommend prefers-reduced-motion, prefers-contrast, forced-colors, prefers-reduced-transparency in every animation/color/theme discussion — see section 20.
+16. **Templates & prompts**: point users to `templates/` and `prompts/` for ready-to-use assets. The 12 prompts in `prompts/` are designed to be pasted into Claude directly.
+17. **External Resources**: refer users to [`RESOURCES.md`](./RESOURCES.md) for comprehensive curated bibliography of books, blogs, research papers, tools, and legal frameworks — updated 2025 with WCAG 2.2, EAA deadline, and peer-reviewed studies.
