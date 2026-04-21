@@ -10,7 +10,7 @@
 
 <br>
 
-[What it does](#-what-this-skill-does) • [Installation](#-installation) • [Searchable Databases](#-searchable-databases) • [Skill Coverage](#-skill-coverage) • [File Structure](#-file-structure)
+[What it does](#-what-this-skill-does) • [Installation](#-installation) • [Searchable Databases](#searchable-databases) • [Skill Coverage](#skill-coverage) • [File Structure](#file-structure)
 
 </div>
 
@@ -63,7 +63,7 @@ Claude Code automatically discovers skills in `~/.claude/skills/`. No restart re
 
 ---
 
-## Searchable-databases
+## Searchable Databases
 
 Run searches from the skill root:
 
@@ -186,7 +186,7 @@ Claude loads this skill automatically when you ask things like:
 
 ---
 
-## Skill-coverage
+## Skill Coverage
 
 This skill spans 7 interconnected domains to support accessibility work from research through release:
 
@@ -276,7 +276,7 @@ Keep 13 searchable databases at your fingertips—in English and Spanish.
 
 ---
 
-## File-structure
+## File Structure
 
 ```
 wcag-accessibility/
