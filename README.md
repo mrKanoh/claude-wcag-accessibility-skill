@@ -9,6 +9,8 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](https://opensource.org/licenses/MIT)
 [![Tests](https://img.shields.io/github/actions/workflow/status/mrKanoh/claude-wcag-accessibility-skill/test.yml?branch=main&label=tests&style=for-the-badge)](https://github.com/mrKanoh/claude-wcag-accessibility-skill/actions)
 
+[🇪🇸 Leer en Español](./README-es.md)
+
 <br>
 
 [What it does](#-what-this-skill-does) • [Installation](#-installation) • [Searchable Databases](#searchable-databases) • [Skill Coverage](#skill-coverage) • [File Structure](#file-structure)
