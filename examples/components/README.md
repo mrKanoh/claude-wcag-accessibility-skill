@@ -63,6 +63,20 @@ Each file is self-contained (no external dependencies) and keyboard + screen-rea
 
 ---
 
+### 🎥 [media-player.html](./media-player.html)
+**Pattern:** Custom Media Player  
+**WCAG SCs:** 1.2.2, 1.2.3, 1.2.5, 2.1.1, 2.4.7, 4.1.2
+
+| Feature | Implementation |
+|---------|---------------|
+| Captions | Embedded `<track kind="captions">` with toggle button |
+| Audio Description | Embedded `<track kind="descriptions">` with toggle button |
+| Keyboard | Space/Enter plays/pauses; Arrow keys scrub video and adjust volume |
+| ARIA states | `aria-pressed` for Play/Pause, CC, AD, Mute toggles |
+| ARIA values | `aria-valuetext` on sliders for screen readers to read percentages |
+
+---
+
 ## Testing these components
 
 ### Keyboard test

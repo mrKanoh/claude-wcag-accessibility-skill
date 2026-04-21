@@ -10,8 +10,14 @@ by Category, then sorted by Year (desc) within each group.
 """
 
 import csv
+import sys
+import io
 from pathlib import Path
 from datetime import date
+
+# Force UTF-8 output on Windows
+if sys.stdout.encoding and sys.stdout.encoding.lower() not in ('utf-8', 'utf-8-sig'):
+    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
 
 ROOT     = Path(__file__).parent.parent
 CSV_PATH = ROOT / "data" / "resources.csv"
@@ -43,7 +49,13 @@ def group_by_category(rows: list[dict]) -> dict[str, list[dict]]:
         groups.setdefault(cat, []).append(row)
     # Sort within each category: newest first, then alphabetically
     for cat in groups:
-        groups[cat].sort(key=lambda r: (-int(r.get("Year", "0") or 0), r.get("Title", "")))
+        def get_year(r):
+            val = r.get("Year", "0") or "0"
+            try:
+                return -int(val)
+            except ValueError:
+                return 0
+        groups[cat].sort(key=lambda r: (get_year(r), r.get("Title", "")))
     return groups
 
 

@@ -7,6 +7,7 @@
 [![WCAG 2.2 AA](https://img.shields.io/badge/WCAG-2.2_AA-blueviolet?style=for-the-badge)](https://www.w3.org/WAI/standards-guidelines/wcag/)
 [![Claude Code](https://img.shields.io/badge/Claude_Code-Skill-D97757?style=for-the-badge&logo=anthropic&logoColor=white)](https://claude.ai)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](https://opensource.org/licenses/MIT)
+[![Tests](https://img.shields.io/github/actions/workflow/status/mrKanoh/claude-wcag-accessibility-skill/test.yml?branch=main&label=tests&style=for-the-badge)](https://github.com/mrKanoh/claude-wcag-accessibility-skill/actions)
 
 <br>
 
@@ -131,6 +132,7 @@ python scripts/search.py glossary --keyword contrast
 | File | Contents |
 |------|----------|
 | `data/wcag-criteria.csv` | WCAG 2.1 A/AA + **WCAG 2.2** (2.4.11–2.4.13, 2.5.7–2.5.8, 3.2.6, 3.3.7–3.3.9) |
+| `data/wcag3-draft.csv` | Draft WCAG 3.0 Bronze level criteria (APCA, plain language) |
 | `data/aria-patterns.csv` | 25+ component patterns · ARIA · keyboard · focus mgmt |
 | `data/testing-tools.csv` | 30+ tools by type · platform · browser · cost |
 | `data/screen-reader-keys.csv` | Shortcuts for NVDA · JAWS · VoiceOver (macOS/iOS) · TalkBack · Narrator |
@@ -144,7 +146,8 @@ python scripts/search.py glossary --keyword contrast
 | `data/legal-framework.csv` | 25+ jurisdictions: ADA, EAA, Section 508, AODA, LGPD, and more |
 | `data/resources.csv` | 50+ curated books, blogs, research papers, tools, and standards |
 | `data/cognitive-accessibility.csv` | 20 COGA patterns: ADHD, dyslexia, memory, anxiety, autism |
-| `scripts/search.py` | CLI search across all **14 databases** · `--output json/csv` · `--export` · `all` subcommand |
+| `scripts/search.py` | CLI search across all **15 databases** · `--output json/csv` · `--export` · `all` subcommand |
+| `scripts/mcp-server.py` | Model Context Protocol server exposing all databases to Claude directly |
 | `RESOURCES.md` | Human-readable bibliography — browse by category, W3C standards, academic research, etc. |
 | `templates/audit-report.md` | Fill-in audit report template |
 | `templates/a11y-ci.yml` | GitHub Actions pipeline (axe + pa11y + Playwright + Lighthouse) |
@@ -167,6 +170,9 @@ python scripts/search.py glossary --keyword contrast
 | `examples/components/toast-notifications.html` | Toast system: `role="status"` + `role="alert"`, reduced motion |
 | `examples/components/carousel.html` | Carousel: play/pause (WCAG 2.2.2), ARIA, auto-rotation, reduced motion |
 | `examples/components/tree-view.html` | Tree View: expand/collapse, roving tabindex, full keyboard nav |
+| `examples/components/combobox.html` | Combobox/Autocomplete: ARIA 1.2, real-time filtering, live region |
+| `examples/components/data-grid.html` | Data Grid: aria-sort, select-all, pagination, search filter |
+| `examples/components/media-player.html` | Media Player: Custom CC/AD toggles, accessible sliders |
 
 ---
 
@@ -285,8 +291,9 @@ wcag-accessibility/
   ├─ CHANGELOG.md                      ← Version history
   ├─ CONTRIBUTING.md                   ← Contribution guide
   │
-  ├─ data/                             ← 14 searchable databases
+  ├─ data/                             ← 15 searchable databases
   │  ├─ wcag-criteria.csv              WCAG 2.0/2.1 + WCAG 2.2 (70+ criteria)
+  │  ├─ wcag3-draft.csv                Draft WCAG 3.0 Bronze level criteria
   │  ├─ aria-patterns.csv              25+ component patterns: keyboard, focus, roles
   │  ├─ testing-tools.csv              30+ tools: axe, WAVE, Accessibility Insights, etc.
   │  ├─ screen-reader-keys.csv         Shortcuts for NVDA, JAWS, VoiceOver, TalkBack, Narrator
@@ -304,9 +311,10 @@ wcag-accessibility/
   ├─ RESOURCES.md                      ← Human-readable bibliography by category
   │
   ├─ scripts/
-  │  ├─ search.py                      ← CLI to query all 14 databases
+  │  ├─ search.py                      ← CLI to query all 15 databases
   │  │                                    --output json/csv, --export, 'all' subcommand
-  │  └─ generate-resources-md.py       ← Auto-generate RESOURCES.md from CSV
+  │  ├─ generate-resources-md.py       ← Auto-generate RESOURCES.md from CSV
+  │  └─ mcp-server.py                  ← Model Context Protocol server
   │
   ├─ tests/
   │  └─ test_search.py                 ← pytest suite (39 tests, all pass)
@@ -319,11 +327,14 @@ wcag-accessibility/
   │  └─ .lighthouserc.json             Lighthouse CI config with a11y assertions
   │
   ├─ examples/
-  │  └─ components/                    ← 4 working accessible HTML components
+  │  └─ components/                    ← 7 working accessible HTML components
   │     ├─ date-picker.html            Dialog pattern, roving tabindex, Arrow keys
   │     ├─ toast-notifications.html    Live regions: polite + assertive, reduced motion
   │     ├─ carousel.html               Play/pause (WCAG 2.2.2), ARIA, auto-rotation
-  │     └─ tree-view.html             Expand/collapse, roving tabindex, full keyboard
+  │     ├─ tree-view.html              Expand/collapse, roving tabindex, full keyboard
+  │     ├─ combobox.html               ARIA 1.2, real-time filtering, live region
+  │     ├─ data-grid.html              aria-sort, select-all, pagination, search filter
+  │     └─ media-player.html           Custom CC/AD toggles, accessible sliders
   │
   ├─ prompts/                          ← 12 Claude prompts ready to copy-paste
   │  ├─ audit-component.md

@@ -9,6 +9,26 @@ This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [2.2.0] - 2026-04-21
+### Added
+- MCP Server (`scripts/mcp-server.py`) to expose 15 databases to Claude directly.
+- WCAG 3.0 Draft database (`data/wcag3-draft.csv`).
+- Accessible Media Player component (`examples/components/media-player.html`).
+- Pull Request Template (`.github/PULL_REQUEST_TEMPLATE.md`).
+- Synced `RESOURCES.md` using `generate-resources-md.py`.
+
+## [2.1.0] - 2026-04-21
+### Added
+- Optimized Skill description with 14 trigger categories.
+- Evaluation prompts (`evals/evals.json`) for skill testing.
+- GitHub Actions CI workflow (`.github/workflows/test.yml`).
+- Accessible Combobox component (`examples/components/combobox.html`).
+- Accessible Data Grid component (`examples/components/data-grid.html`).
+- Pytest configuration (`pytest.ini`).
+- Security policy (`SECURITY.md`).
+- MIT License file (`LICENSE`).
+- Component README with feature tables.
+
 ### Added
 - **VPAT 2.5 template** (`templates/vpat-2.5-template.md`) — full official ITI VPAT 2.5
   Rev WCAG format covering WCAG 2.x (A/AA/AAA), Section 508, and EN 301 549

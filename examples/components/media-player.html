@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Accessible Media Player — WCAG 2.2 AA</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: system-ui, -apple-system, sans-serif; padding: 2rem; background: #f9fafb; }
+    h1 { margin-bottom: .5rem; }
+    p.desc { margin-bottom: 2rem; color: #4b5563; font-size: .95rem; }
+    kbd { background:#e5e7eb;border-radius:4px;padding:.1rem .35rem;font-size:.85rem;border:1px solid #d1d5db; }
+
+    /* ── Player container ── */
+    .player-wrapper {
+      max-width: 640px;
+      background: #000;
+      border-radius: 12px;
+      overflow: hidden;
+      position: relative;
+      box-shadow: 0 10px 25px rgba(0,0,0,.2);
+    }
+
+    video { width: 100%; display: block; }
+
+    /* ── Controls bar ── */
+    .controls {
+      display: flex; align-items: center; gap: .5rem;
+      background: #111827; padding: .5rem 1rem;
+      color: #fff;
+    }
+
+    /* ── Buttons ── */
+    .player-btn {
+      background: none; border: 2px solid transparent; border-radius: 6px;
+      color: #fff; cursor: pointer; padding: .4rem;
+      min-width: 36px; min-height: 36px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .player-btn:hover { background: #374151; }
+    .player-btn:focus-visible { outline: 3px solid #60a5fa; outline-offset: 2px; }
+
+    /* ── Progress slider ── */
+    .slider-container { flex: 1; display: flex; align-items: center; padding: 0 .5rem; }
+    input[type="range"] {
+      width: 100%; cursor: pointer; accent-color: #60a5fa;
+    }
+    input[type="range"]:focus-visible { outline: 3px solid #60a5fa; outline-offset: 2px; }
+
+    /* ── Time display ── */
+    .time-display { font-variant-numeric: tabular-nums; font-size: .85rem; margin-right: .5rem; }
+
+    /* ── CC & Audio Description toggles ── */
+    .toggle-btn { font-size: .85rem; font-weight: 700; }
+    .toggle-btn[aria-pressed="true"] { color: #60a5fa; border-color: #60a5fa; background: rgba(96,165,250,.1); }
+
+    .sr-only { position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0; }
+  </style>
+</head>
+<body>
+
+<h1>Accessible Media Player</h1>
+<p class="desc">
+  WCAG 2.1/2.2 AA. Keyboard: <kbd>Space</kbd>/<kbd>Enter</kbd> play/pause · <kbd>←</kbd><kbd>→</kbd> scrub · <kbd>↑</kbd><kbd>↓</kbd> volume.
+  Includes Captions (CC) and Audio Description (AD) toggles.
+</p>
+
+<!--
+  WCAG KEY POINTS:
+  1. 1.2.2 Captions (Prerecorded): <track kind="captions"> provided.
+  2. 1.2.3 / 1.2.5 Audio Description: Secondary audio track or text-based AD provided.
+  3. 2.1.1 Keyboard: Custom controls are fully keyboard accessible (buttons, ranges).
+  4. 2.4.7 Focus Visible: High contrast focus rings on all controls.
+  5. 4.1.2 Name, Role, Value: Buttons have aria-labels, sliders have aria-valuetext.
+  6. aria-pressed state on toggle buttons (CC, AD, Mute).
+-->
+
+<div class="player-wrapper" role="region" aria-label="Video Player">
+  <video id="video" crossorigin="anonymous" poster="https://via.placeholder.com/640x360.png?text=Video+Poster">
+    <!-- Provide actual video source here -->
+    <source src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/friday.mp4" type="video/mp4">
+    <!-- Captions -->
+    <track id="captions-track" kind="captions" srclang="en" label="English" src="data:text/vtt,WEBVTT%0A%0A1%0A00:00:01.000%20--%3E%2000:00:03.000%0A%5BUpbeat%20music%20playing%5D%0A" default>
+    <!-- Audio Descriptions (Text-based, can be read by SR) -->
+    <track id="ad-track" kind="descriptions" srclang="en" label="English Audio Description" src="data:text/vtt,WEBVTT%0A%0A1%0A00:00:01.000%20--%3E%2000:00:03.000%0AA%20person%20walking%20in%20the%20park.%0A">
+  </video>
+
+  <div class="controls">
+    <button id="play-btn" class="player-btn" aria-label="Play" aria-pressed="false">▶</button>
+    
+    <div class="slider-container">
+      <input type="range" id="seek-slider" min="0" max="100" value="0" step="1" aria-label="Seek time" aria-valuetext="0 percent">
+    </div>
+
+    <div class="time-display" aria-hidden="true">
+      <span id="current-time">0:00</span> / <span id="duration">0:00</span>
+    </div>
+
+    <button id="mute-btn" class="player-btn" aria-label="Mute" aria-pressed="false">🔊</button>
+    
+    <div class="slider-container" style="max-width:80px">
+      <input type="range" id="volume-slider" min="0" max="100" value="100" step="1" aria-label="Volume" aria-valuetext="100 percent">
+    </div>
+
+    <button id="cc-btn" class="player-btn toggle-btn" aria-label="Closed Captions" aria-pressed="true">CC</button>
+    <button id="ad-btn" class="player-btn toggle-btn" aria-label="Audio Descriptions" aria-pressed="false">AD</button>
+  </div>
+</div>
+
+<div id="sr-announcer" class="sr-only" aria-live="polite"></div>
+
+<script>
+(function() {
+  const video = document.getElementById('video');
+  const playBtn = document.getElementById('play-btn');
+  const seekSlider = document.getElementById('seek-slider');
+  const currentTime = document.getElementById('current-time');
+  const duration = document.getElementById('duration');
+  const muteBtn = document.getElementById('mute-btn');
+  const volumeSlider = document.getElementById('volume-slider');
+  const ccBtn = document.getElementById('cc-btn');
+  const adBtn = document.getElementById('ad-btn');
+  const announcer = document.getElementById('sr-announcer');
+
+  const formatTime = (time) => {
+    if (isNaN(time)) return "0:00";
+    const min = Math.floor(time / 60);
+    const sec = Math.floor(time % 60);
+    return `${min}:${sec < 10 ? '0' : ''}${sec}`;
+  };
+
+  video.addEventListener('loadedmetadata', () => {
+    duration.textContent = formatTime(video.duration);
+  });
+
+  video.addEventListener('timeupdate', () => {
+    currentTime.textContent = formatTime(video.currentTime);
+    const val = (video.currentTime / video.duration) * 100;
+    seekSlider.value = val || 0;
+    seekSlider.setAttribute('aria-valuetext', `${Math.round(val)} percent`);
+  });
+
+  playBtn.addEventListener('click', () => {
+    if (video.paused) {
+      video.play();
+      playBtn.textContent = '⏸';
+      playBtn.setAttribute('aria-label', 'Pause');
+      playBtn.setAttribute('aria-pressed', 'true');
+    } else {
+      video.pause();
+      playBtn.textContent = '▶';
+      playBtn.setAttribute('aria-label', 'Play');
+      playBtn.setAttribute('aria-pressed', 'false');
+    }
+  });
+
+  seekSlider.addEventListener('input', () => {
+    const time = video.duration * (seekSlider.value / 100);
+    video.currentTime = time;
+  });
+
+  muteBtn.addEventListener('click', () => {
+    video.muted = !video.muted;
+    muteBtn.setAttribute('aria-pressed', video.muted ? 'true' : 'false');
+    muteBtn.textContent = video.muted ? '🔇' : '🔊';
+    muteBtn.setAttribute('aria-label', video.muted ? 'Unmute' : 'Mute');
+    if(video.muted) {
+       volumeSlider.value = 0;
+       volumeSlider.setAttribute('aria-valuetext', '0 percent');
+    } else {
+       volumeSlider.value = video.volume * 100;
+       volumeSlider.setAttribute('aria-valuetext', `${Math.round(video.volume * 100)} percent`);
+    }
+  });
+
+  volumeSlider.addEventListener('input', () => {
+    video.volume = volumeSlider.value / 100;
+    video.muted = video.volume === 0;
+    volumeSlider.setAttribute('aria-valuetext', `${volumeSlider.value} percent`);
+    muteBtn.setAttribute('aria-pressed', video.muted ? 'true' : 'false');
+    muteBtn.textContent = video.muted ? '🔇' : '🔊';
+    muteBtn.setAttribute('aria-label', video.muted ? 'Unmute' : 'Mute');
+  });
+
+  // Toggling CC
+  ccBtn.addEventListener('click', () => {
+    const track = video.textTracks[0]; // Assuming Captions is first track
+    if (!track) return;
+    const isShowing = track.mode === 'showing';
+    track.mode = isShowing ? 'hidden' : 'showing';
+    ccBtn.setAttribute('aria-pressed', !isShowing);
+    announcer.textContent = !isShowing ? "Captions enabled" : "Captions disabled";
+  });
+
+  // Toggling AD
+  adBtn.addEventListener('click', () => {
+    const track = video.textTracks[1]; // Assuming AD is second track
+    if (!track) return;
+    const isShowing = track.mode === 'showing';
+    track.mode = isShowing ? 'hidden' : 'showing';
+    adBtn.setAttribute('aria-pressed', !isShowing);
+    announcer.textContent = !isShowing ? "Audio descriptions enabled" : "Audio descriptions disabled";
+  });
+
+  // Init text track states based on markup (Captions default to showing)
+  if(video.textTracks[0]) video.textTracks[0].mode = 'showing';
+  if(video.textTracks[1]) video.textTracks[1].mode = 'hidden';
+
+})();
+</script>
+</body>
+</html>
