@@ -1,6 +1,56 @@
 ---
 name: wcag-accessibility
-description: Use when auditing website/app accessibility, evaluating WCAG 2.0/2.1/2.2 or Section 508 compliance, building accessible components, implementing WAI-ARIA patterns, testing with screen readers (NVDA/JAWS/VoiceOver/TalkBack), designing accessible typography and color palettes, handing off a11y requirements between design and dev, defining accessibility KPIs, or when asked "is this accessible?", "what ARIA do I need?", "how do I audit this?", or "how do I test with a screen reader?"
+description: >
+  Comprehensive WCAG 2.1/2.2 AA accessibility skill covering audits, remediation, ARIA patterns,
+  screen reader testing, color contrast, keyboard navigation, mobile a11y, cognitive accessibility,
+  legal compliance, and CI/CD testing pipelines.
+
+  Use this skill whenever the user asks about or touches ANY of the following — even if they do not
+  use the word "accessibility":
+
+  AUDITING & COMPLIANCE: "is this accessible?", "does this pass WCAG?", "audit my component",
+  "Section 508 compliance", "EAA 2025", "VPAT", "ACR", "conformance report",
+  "accessibility statement", reviewing code or designs for a11y problems.
+
+  ARIA & HTML: "what role do I use?", "aria-label vs aria-labelledby", "focus management",
+  "focus trap", "live region", "aria-expanded", "roving tabindex", "skip link",
+  "semantic HTML", "accessible name", role on any UI element.
+
+  KEYBOARD & INTERACTION: "keyboard navigation", "Tab order", "keyboard trap",
+  "no keyboard access", "arrow key navigation", any interactive component that needs keyboard support.
+
+  SCREEN READERS: "NVDA", "JAWS", "VoiceOver", "TalkBack", "Narrator", "AT", "assistive technology",
+  "screen reader announces", "announced as", "SR testing", braille display.
+
+  COLOR & TYPOGRAPHY: "color contrast", "contrast ratio", "passes AA?", "4.5:1", "3:1",
+  "APCA", "color blind", "forced colors", "high contrast mode",
+  "font size accessibility", "readable typography", "text spacing".
+
+  COMPONENTS: building or reviewing modals, dialogs, menus, dropdowns, tabs, accordions, carousels,
+  date pickers, toasts, alerts, data tables, tree views, comboboxes, autocomplete, sliders,
+  tooltips, form validation — any interactive UI component.
+
+  MOBILE: "React Native accessibility", "SwiftUI a11y", "Jetpack Compose accessibility",
+  "touch target", "Dynamic Type", "TalkBack", "VoiceOver iOS", "reduce motion".
+
+  COGNITIVE: ADHD, dyslexia, plain language, reading level, cognitive load, COGA,
+  "too complex", "hard to understand", error messages, time limits, accessible authentication.
+
+  FRAMEWORKS: making any React, Next.js, Vue 3, Angular, Svelte, Astro, SolidJS, or native
+  mobile component accessible.
+
+  LEGAL: "ADA lawsuit", "EAA", "EN 301 549", "Section 508", "AODA", "accessibility law",
+  which standard applies, legal risk, "do I need to be accessible?".
+
+  CI/CD: "axe-core", "pa11y", "Playwright accessibility", "jest-axe", "Lighthouse score",
+  "automated accessibility testing", adding a11y to a pipeline.
+
+  DESIGN: reviewing Figma for accessibility, design tokens contrast, handoff checklist,
+  accessible color palette, inclusive design, WCAG at design phase.
+
+  Always apply this skill proactively when the user is building any user-facing UI, reviewing
+  front-end code, or asking about legal or compliance requirements — even without the word
+  "accessibility" — because most developers don't know what they don't know.
 ---
 
 # Paul J. Adam Web & Mobile Accessibility Skill

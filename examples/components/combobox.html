@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Accessible Combobox / Autocomplete — WCAG 2.2 AA</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: system-ui, -apple-system, sans-serif; padding: 2rem; background: #f9fafb; }
+    h1 { margin-bottom: .5rem; }
+    p.desc { margin-bottom: 2rem; color: #4b5563; font-size: .95rem; }
+    kbd { background:#e5e7eb;border-radius:4px;padding:.1rem .35rem;font-size:.85rem;border:1px solid #d1d5db; }
+
+    /* ── Combobox wrapper ── */
+    .combo-wrapper { position: relative; max-width: 360px; }
+    label { display: block; font-weight: 600; margin-bottom: .4rem; color: #111827; }
+
+    /* ── Input ── */
+    .combo-input {
+      width: 100%; padding: .6rem .9rem;
+      border: 2px solid #6b7280; border-radius: 8px;
+      font-size: 1rem; color: #111827; background: #fff;
+    }
+    .combo-input:focus { outline: 3px solid #1d4ed8; outline-offset: 2px; border-color: #1d4ed8; }
+    .combo-input[aria-invalid="true"] { border-color: #dc2626; }
+
+    /* ── Toggle button ── */
+    .combo-toggle {
+      position: absolute; right: .4rem; top: 50%; transform: translateY(-50%);
+      background: none; border: 2px solid transparent; border-radius: 6px;
+      padding: .3rem .5rem; cursor: pointer; color: #6b7280; font-size: .9rem;
+      min-width: 36px; min-height: 36px; display: flex; align-items: center; justify-content: center;
+    }
+    .combo-toggle:hover { background: #f3f4f6; color: #111827; }
+    .combo-toggle:focus-visible { outline: 3px solid #1d4ed8; outline-offset: 2px; }
+
+    /* ── Listbox ── */
+    .combo-listbox {
+      position: absolute; top: calc(100% + 4px); left: 0; right: 0;
+      background: #fff; border: 2px solid #6b7280; border-radius: 8px;
+      box-shadow: 0 8px 20px rgba(0,0,0,.12);
+      max-height: 240px; overflow-y: auto;
+      z-index: 100; list-style: none; padding: .4rem 0;
+    }
+    .combo-listbox[hidden] { display: none; }
+
+    /* ── Options ── */
+    .combo-option {
+      padding: .55rem 1rem; cursor: pointer; font-size: .95rem; color: #111827;
+      display: flex; align-items: center; gap: .6rem;
+    }
+    .combo-option:hover, .combo-option[aria-selected="true"] { background: #dbeafe; }
+    .combo-option[aria-selected="true"] { font-weight: 600; color: #1e40af; }
+    .combo-option[data-focused="true"] { background: #dbeafe; outline: 2px solid #1d4ed8; outline-offset: -2px; }
+    .combo-option.no-results { color: #6b7280; font-style: italic; cursor: default; }
+
+    /* ── Status ── */
+    .combo-status { margin-top: .5rem; font-size: .875rem; color: #374151; }
+    .sr-only { position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0; }
+  </style>
+</head>
+<body>
+
+<h1>Accessible Combobox / Autocomplete</h1>
+<p class="desc">
+  WCAG 2.1/2.2 AA · WAI-ARIA Combobox Pattern (1.2).
+  <kbd>↓</kbd> opens list · <kbd>↑</kbd><kbd>↓</kbd> navigate · <kbd>Enter</kbd> selects · <kbd>Escape</kbd> closes · <kbd>Home</kbd><kbd>End</kbd> jump
+</p>
+
+<!--
+  WCAG KEY POINTS:
+  1. role="combobox" on the input itself (ARIA 1.2 pattern)
+  2. aria-expanded="true|false" on the combobox input
+  3. aria-haspopup="listbox" on the input
+  4. aria-autocomplete="list" (filters as user types)
+  5. aria-controls pointing to the listbox ID
+  6. aria-activedescendant updated to the focused option's ID
+  7. role="listbox" on the dropdown ul
+  8. role="option" on each li
+  9. aria-selected="true" on selected option
+  10. aria-label or aria-labelledby on the listbox
+  11. Live region announces count of available options (WCAG 4.1.3)
+  12. No reliance on color alone for focus (outline always visible)
+-->
+
+<div class="combo-wrapper" id="country-combo">
+  <label id="country-label" for="country-input">Country</label>
+
+  <!-- Combobox input -->
+  <div style="position:relative">
+    <input
+      id="country-input"
+      class="combo-input"
+      type="text"
+      role="combobox"
+      aria-labelledby="country-label"
+      aria-autocomplete="list"
+      aria-expanded="false"
+      aria-haspopup="listbox"
+      aria-controls="country-listbox"
+      aria-activedescendant=""
+      autocomplete="off"
+      spellcheck="false"
+      placeholder="Type to search countries…"
+    >
+    <!-- Toggle button — opens/closes list -->
+    <button
+      id="country-toggle"
+      class="combo-toggle"
+      type="button"
+      tabindex="-1"
+      aria-label="Show country options"
+    >▾</button>
+  </div>
+
+  <!-- Listbox -->
+  <ul
+    id="country-listbox"
+    class="combo-listbox"
+    role="listbox"
+    aria-labelledby="country-label"
+    hidden
+  ></ul>
+
+  <!-- Polite announcement for screen readers -->
+  <div id="combo-live" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- Status (selected value) -->
+  <div id="combo-status" class="combo-status" aria-live="polite"></div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  const OPTIONS = [
+    'Argentina','Australia','Austria','Belgium','Bolivia','Brazil','Canada',
+    'Chile','China','Colombia','Costa Rica','Croatia','Czech Republic','Denmark',
+    'Ecuador','Egypt','Estonia','Finland','France','Germany','Greece','Guatemala',
+    'Hungary','India','Indonesia','Ireland','Israel','Italy','Japan','Kenya',
+    'Latvia','Lithuania','Luxembourg','Malaysia','Mexico','Morocco','Netherlands',
+    'New Zealand','Nigeria','Norway','Pakistan','Panama','Paraguay','Peru',
+    'Philippines','Poland','Portugal','Romania','Saudi Arabia','Singapore',
+    'Slovakia','Slovenia','South Africa','South Korea','Spain','Sweden',
+    'Switzerland','Taiwan','Thailand','Tunisia','Turkey','Ukraine','United Arab Emirates',
+    'United Kingdom','United States','Uruguay','Venezuela','Vietnam'
+  ];
+
+  const input    = document.getElementById('country-input');
+  const listbox  = document.getElementById('country-listbox');
+  const toggle   = document.getElementById('country-toggle');
+  const live     = document.getElementById('combo-live');
+  const status   = document.getElementById('combo-status');
+
+  let focusedIndex = -1;
+  let selectedValue = '';
+  let isOpen = false;
+  let currentOptions = [];
+
+  /* ── Build option elements ── */
+  function buildOptions(options) {
+    currentOptions = options;
+    listbox.innerHTML = '';
+    focusedIndex = -1;
+    input.setAttribute('aria-activedescendant', '');
+
+    if (options.length === 0) {
+      const li = document.createElement('li');
+      li.className = 'combo-option no-results';
+      li.textContent = 'No countries found';
+      li.setAttribute('role', 'option');
+      li.setAttribute('aria-disabled', 'true');
+      listbox.appendChild(li);
+      live.textContent = 'No results found';
+      return;
+    }
+
+    options.forEach((opt, i) => {
+      const li = document.createElement('li');
+      li.id = `country-opt-${i}`;
+      li.className = 'combo-option';
+      li.setAttribute('role', 'option');
+      li.setAttribute('aria-selected', opt === selectedValue ? 'true' : 'false');
+      if (opt === selectedValue) li.textContent = `✓ ${opt}`;
+      else li.textContent = opt;
+      li.addEventListener('click', () => selectOption(opt));
+      li.addEventListener('mouseenter', () => setFocused(i, false));
+      listbox.appendChild(li);
+    });
+
+    // Announce count to screen readers
+    live.textContent = `${options.length} option${options.length === 1 ? '' : 's'} available`;
+  }
+
+  function getOptionEls() {
+    return [...listbox.querySelectorAll('[role="option"]:not([aria-disabled])')];
+  }
+
+  /* ── Focus management within listbox (visual + aria-activedescendant) ── */
+  function setFocused(index, updateInput = true) {
+    const els = getOptionEls();
+    if (els.length === 0) return;
+    index = Math.max(0, Math.min(index, els.length - 1));
+
+    // Clear previous
+    els.forEach(el => el.removeAttribute('data-focused'));
+
+    els[index].setAttribute('data-focused', 'true');
+    input.setAttribute('aria-activedescendant', els[index].id);
+    els[index].scrollIntoView({ block: 'nearest' });
+    focusedIndex = index;
+  }
+
+  /* ── Open / close ── */
+  function openList() {
+    const query = input.value.trim().toLowerCase();
+    const filtered = OPTIONS.filter(o => o.toLowerCase().includes(query));
+    buildOptions(filtered);
+    listbox.removeAttribute('hidden');
+    input.setAttribute('aria-expanded', 'true');
+    toggle.setAttribute('aria-label', 'Hide country options');
+    isOpen = true;
+
+    // Pre-select current value if present
+    if (selectedValue) {
+      const idx = filtered.indexOf(selectedValue);
+      if (idx >= 0) setFocused(idx);
+    }
+  }
+
+  function closeList(clearActive = true) {
+    listbox.setAttribute('hidden', '');
+    input.setAttribute('aria-expanded', 'false');
+    toggle.setAttribute('aria-label', 'Show country options');
+    if (clearActive) input.setAttribute('aria-activedescendant', '');
+    isOpen = false;
+    live.textContent = '';
+  }
+
+  /* ── Select an option ── */
+  function selectOption(value) {
+    selectedValue = value;
+    input.value = value;
+    status.textContent = `Selected: ${value}`;
+    closeList();
+    input.focus();
+  }
+
+  /* ── Events ── */
+  input.addEventListener('input', () => {
+    selectedValue = ''; // Clear selection on manual edit
+    status.textContent = '';
+    if (!isOpen) openList();
+    else {
+      const q = input.value.trim().toLowerCase();
+      buildOptions(OPTIONS.filter(o => o.toLowerCase().includes(q)));
+    }
+  });
+
+  input.addEventListener('keydown', e => {
+    const els = getOptionEls();
+
+    switch (e.key) {
+      case 'ArrowDown':
+        e.preventDefault();
+        if (!isOpen) { openList(); return; }
+        setFocused(focusedIndex < 0 ? 0 : focusedIndex + 1);
+        break;
+
+      case 'ArrowUp':
+        e.preventDefault();
+        if (!isOpen) { openList(); return; }
+        if (focusedIndex <= 0) {
+          // ArrowUp from first option → return focus to input
+          getOptionEls().forEach(el => el.removeAttribute('data-focused'));
+          input.setAttribute('aria-activedescendant', '');
+          focusedIndex = -1;
+        } else {
+          setFocused(focusedIndex - 1);
+        }
+        break;
+
+      case 'Enter':
+        e.preventDefault();
+        if (isOpen && focusedIndex >= 0 && els[focusedIndex]) {
+          selectOption(currentOptions[focusedIndex]);
+        } else if (!isOpen) {
+          openList();
+        }
+        break;
+
+      case 'Escape':
+        if (isOpen) {
+          e.preventDefault();
+          closeList();
+        }
+        break;
+
+      case 'Home':
+        if (isOpen) { e.preventDefault(); setFocused(0); }
+        break;
+
+      case 'End':
+        if (isOpen) { e.preventDefault(); setFocused(els.length - 1); }
+        break;
+
+      case 'Tab':
+        closeList();
+        break;
+    }
+  });
+
+  input.addEventListener('focus', () => {
+    // Don't auto-open on focus — wait for user input
+  });
+
+  input.addEventListener('click', () => {
+    if (!isOpen) openList();
+    else closeList();
+  });
+
+  toggle.addEventListener('click', () => {
+    if (isOpen) closeList();
+    else { input.focus(); openList(); }
+  });
+
+  // Close on outside click
+  document.addEventListener('click', e => {
+    if (!document.getElementById('country-combo').contains(e.target)) {
+      closeList();
+    }
+  });
+
+  // Validate on blur: if typed text doesn't match a country, show error
+  input.addEventListener('blur', e => {
+    if (document.getElementById('country-combo').contains(e.relatedTarget)) return;
+    const typed = input.value.trim();
+    if (typed && !OPTIONS.includes(typed)) {
+      input.setAttribute('aria-invalid', 'true');
+      status.style.color = '#dc2626';
+      status.textContent = `"${typed}" is not a valid country. Please select from the list.`;
+    } else {
+      input.removeAttribute('aria-invalid');
+      status.style.color = '#374151';
+    }
+    closeList();
+  });
+
+})();
+</script>
+
+</body>
+</html>

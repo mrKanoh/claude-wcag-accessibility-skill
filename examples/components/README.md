@@ -1,0 +1,92 @@
+# Accessible Component Examples
+
+Production-ready HTML components demonstrating WCAG 2.1/2.2 AA accessibility patterns.
+Each file is self-contained (no external dependencies) and keyboard + screen-reader tested.
+
+---
+
+## Components
+
+### 🗓️ [date-picker.html](./date-picker.html)
+**Pattern:** Dialog — WAI-ARIA Date Picker Dialog Pattern  
+**WCAG SCs:** 1.3.1, 2.1.1, 2.1.2, 2.4.3, 2.4.7, 2.4.11, 4.1.2
+
+| Feature | Implementation |
+|---------|---------------|
+| Keyboard | Arrow keys navigate days; Page Up/Down change months; Home/End jump to week start/end |
+| Screen reader | `role="dialog"` + `aria-modal` + `aria-labelledby`; day buttons announce full date |
+| Focus trap | Tab cycles within dialog; Escape closes and returns focus to trigger |
+| Text input | Typed dates (`MM/DD/YYYY`) parsed with live error region |
+| Roving tabindex | Only focused day has `tabindex="0"` |
+
+---
+
+### 🔔 [toast-notifications.html](./toast-notifications.html)
+**Pattern:** Live Region / Status Message  
+**WCAG SCs:** 1.3.3, 2.2.2, 4.1.3
+
+| Feature | Implementation |
+|---------|---------------|
+| Polite region | `role="status"` + `aria-live="polite"` for success, info, warning |
+| Assertive region | `role="alert"` + `aria-live="assertive"` for errors only |
+| Dismiss | Every toast has a dismiss button with accessible name |
+| Pause on hover/focus | Timers pause on hover and focus (WCAG 2.2.2) |
+| Reduced motion | Slide animation disabled when `prefers-reduced-motion: reduce` |
+
+---
+
+### 🎠 [carousel.html](./carousel.html)
+**Pattern:** Carousel — WAI-ARIA Carousel Pattern  
+**WCAG SCs:** 2.2.2, 1.3.1, 2.1.1, 2.4.7, 4.1.2
+
+| Feature | Implementation |
+|---------|---------------|
+| Play/Pause | Required by WCAG 2.2.2 — button always visible; pauses auto-rotation |
+| ARIA | `role="region"` + `aria-roledescription="carousel"` on container; `role="group"` + `aria-roledescription="slide"` on slides |
+| Auto-pause | Rotation pauses on hover, focus-in, and when `prefers-reduced-motion` is set |
+| Dot navigation | `role="tablist"` + `role="tab"` dots with `aria-current` and roving tabindex |
+| Announcements | `aria-live="polite"` on slide area (only when paused to avoid verbosity) |
+
+---
+
+### 🌳 [tree-view.html](./tree-view.html)
+**Pattern:** Tree View — WAI-ARIA Tree Pattern  
+**WCAG SCs:** 2.1.1, 2.4.3, 2.4.7, 4.1.2
+
+| Feature | Implementation |
+|---------|---------------|
+| ARIA structure | `role="tree"` → `role="treeitem"` → `role="group"` (nested) |
+| Expand/collapse | `aria-expanded` on parent nodes; `aria-hidden` on nested groups |
+| Roving tabindex | Only focused node has `tabindex="0"` |
+| Keyboard | ↑↓ navigate; → expand or enter child; ← collapse or exit to parent; Home/End jump; `*` expands all siblings |
+| Position | `aria-level`, `aria-setsize`, `aria-posinset` on every node |
+
+---
+
+## Testing these components
+
+### Keyboard test
+Open any file in a browser and test with keyboard only:
+- `Tab` to reach the component
+- Use the documented keyboard shortcuts for each component
+- Verify focus is always visible (never lost)
+- Verify `Escape` closes dialogs and menus
+
+### Screen reader test (recommended pairs)
+- **NVDA 2023.x + Firefox** (Windows) — most common AT pair
+- **VoiceOver + Safari** (macOS/iOS)
+- **TalkBack + Chrome** (Android)
+
+### Automated check
+```bash
+# Run axe-core on any component via CLI
+npx axe examples/components/date-picker.html
+npx axe examples/components/carousel.html
+```
+
+---
+
+## Adding a new component
+
+See [`CONTRIBUTING.md`](../../CONTRIBUTING.md#adding-a-component-example) for the full
+checklist and required header comment template.

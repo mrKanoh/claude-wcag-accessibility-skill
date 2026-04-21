@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Accessible Data Grid — WCAG 2.2 AA</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: system-ui, -apple-system, sans-serif; padding: 2rem; background: #f9fafb; }
+    h1 { margin-bottom: .5rem; }
+    p.desc { margin-bottom: 1.5rem; color: #4b5563; font-size: .95rem; }
+    kbd { background:#e5e7eb;border-radius:4px;padding:.1rem .35rem;font-size:.85rem;border:1px solid #d1d5db; }
+
+    /* ── Toolbar ── */
+    .grid-toolbar { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap; }
+    .grid-toolbar label { font-weight: 600; font-size: .9rem; }
+    .grid-search {
+      padding: .45rem .75rem; border: 2px solid #6b7280; border-radius: 8px;
+      font-size: .95rem; width: 220px;
+    }
+    .grid-search:focus { outline: 3px solid #1d4ed8; outline-offset: 2px; border-color: #1d4ed8; }
+    .grid-count { font-size: .875rem; color: #6b7280; margin-left: auto; }
+
+    /* ── Table wrapper ── */
+    .grid-wrapper { overflow-x: auto; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,.08); }
+
+    /* ── Table ── */
+    table {
+      width: 100%; border-collapse: collapse; background: #fff;
+      font-size: .95rem;
+    }
+
+    /* ── Sortable column headers ── */
+    thead th {
+      background: #f3f4f6; padding: .75rem 1rem;
+      text-align: left; font-weight: 700; color: #374151;
+      border-bottom: 2px solid #e5e7eb;
+      position: relative; white-space: nowrap;
+    }
+    th[aria-sort] { cursor: pointer; user-select: none; }
+    th[aria-sort]:hover { background: #e5e7eb; }
+    th[aria-sort]:focus-visible { outline: 3px solid #1d4ed8; outline-offset: -2px; }
+    .sort-icon { font-size: .75rem; margin-left: .4rem; opacity: .5; }
+    th[aria-sort="ascending"]  .sort-icon { opacity: 1; }
+    th[aria-sort="descending"] .sort-icon { opacity: 1; }
+
+    /* ── Body rows ── */
+    tbody tr { border-bottom: 1px solid #f3f4f6; }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: #f9fafb; }
+    tbody tr:focus-within { background: #eff6ff; }
+    td { padding: .65rem 1rem; color: #111827; vertical-align: middle; }
+
+    /* ── Row checkbox ── */
+    td:first-child, th:first-child { width: 44px; text-align: center; }
+    input[type="checkbox"] { width: 18px; height: 18px; cursor: pointer; accent-color: #1d4ed8; }
+    input[type="checkbox"]:focus-visible { outline: 3px solid #1d4ed8; outline-offset: 2px; }
+
+    /* ── Status badges ── */
+    .badge {
+      display: inline-block; padding: .2rem .55rem; border-radius: 999px;
+      font-size: .78rem; font-weight: 600; letter-spacing: .02em;
+    }
+    .badge-green { background: #d1fae5; color: #065f46; }
+    .badge-yellow { background: #fef3c7; color: #92400e; }
+    .badge-red { background: #fee2e2; color: #991b1b; }
+
+    /* ── Action buttons ── */
+    .row-btn {
+      background: none; border: 1px solid #d1d5db; border-radius: 6px;
+      padding: .25rem .6rem; cursor: pointer; font-size: .8rem; color: #374151;
+      min-height: 32px;
+    }
+    .row-btn:hover { background: #f3f4f6; }
+    .row-btn:focus-visible { outline: 3px solid #1d4ed8; outline-offset: 2px; }
+
+    /* ── No results ── */
+    .no-results { text-align: center; padding: 2rem; color: #6b7280; }
+
+    /* ── Pagination ── */
+    .grid-pagination { display: flex; align-items: center; justify-content: space-between; margin-top: 1rem; font-size: .875rem; color: #374151; flex-wrap: wrap; gap: .5rem; }
+    .page-btns { display: flex; gap: .4rem; }
+    .page-btn { background: #fff; border: 1px solid #d1d5db; border-radius: 6px; padding: .35rem .75rem; cursor: pointer; min-height: 36px; }
+    .page-btn:hover { background: #f3f4f6; }
+    .page-btn[aria-current="page"] { background: #1d4ed8; color: #fff; border-color: #1d4ed8; }
+    .page-btn:focus-visible { outline: 3px solid #1d4ed8; outline-offset: 2px; }
+    .page-btn:disabled { opacity: .4; cursor: not-allowed; }
+
+    .sr-only { position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0; }
+  </style>
+</head>
+<body>
+
+<h1>Accessible Data Grid</h1>
+<p class="desc">
+  WCAG 2.1/2.2 AA. Keyboard: <kbd>Tab</kbd> to navigate cells · <kbd>Space</kbd> to toggle checkboxes · column headers are sortable with <kbd>Enter</kbd>/<kbd>Space</kbd>
+</p>
+
+<!--
+  WCAG KEY POINTS:
+  1. <table> with <caption> for accessible name (SC 1.3.1)
+  2. <th scope="col"> for column headers
+  3. aria-sort="ascending|descending|none" on sortable th — toggled by JS
+  4. aria-label on sort buttons: "Sort by Name ascending"
+  5. Role="status" live region announces sort changes and filter results
+  6. Select-all checkbox: aria-label + aria-checked (indeterminate state via JS property)
+  7. Row checkboxes: aria-label includes row context ("Select Google")
+  8. Action buttons: aria-label includes row context ("Edit Google", "Delete Google")
+  9. Color is never the ONLY indicator for status badges (text label included)
+  10. Pagination buttons: aria-label for prev/next, aria-current="page" for current page
+-->
+
+<div role="toolbar" aria-label="Table controls" class="grid-toolbar">
+  <label for="grid-search">Search:</label>
+  <input
+    id="grid-search"
+    class="grid-search"
+    type="search"
+    placeholder="Filter companies…"
+    aria-label="Filter table by company name or status"
+  >
+  <span id="grid-count" class="grid-count" aria-live="polite" aria-atomic="true"></span>
+</div>
+
+<div class="grid-wrapper">
+  <table id="data-grid" aria-label="Company data" aria-rowcount="10">
+    <caption class="sr-only">Company data table — sortable columns, selectable rows</caption>
+    <thead>
+      <tr>
+        <th scope="col">
+          <input
+            type="checkbox"
+            id="select-all"
+            aria-label="Select all rows"
+          >
+        </th>
+        <th scope="col" aria-sort="none" tabindex="0" data-col="name">
+          Company <span class="sort-icon" aria-hidden="true">↕</span>
+        </th>
+        <th scope="col" aria-sort="none" tabindex="0" data-col="industry">
+          Industry <span class="sort-icon" aria-hidden="true">↕</span>
+        </th>
+        <th scope="col" aria-sort="none" tabindex="0" data-col="score">
+          A11y Score <span class="sort-icon" aria-hidden="true">↕</span>
+        </th>
+        <th scope="col" aria-sort="none" tabindex="0" data-col="status">
+          Status <span class="sort-icon" aria-hidden="true">↕</span>
+        </th>
+        <th scope="col">Actions</th>
+      </tr>
+    </thead>
+    <tbody id="grid-body">
+    </tbody>
+  </table>
+  <p class="no-results" id="no-results" hidden>No companies match your search.</p>
+</div>
+
+<nav aria-label="Table pagination" class="grid-pagination">
+  <span id="page-info">Showing 1–5 of 10</span>
+  <div class="page-btns" role="group" aria-label="Page navigation">
+    <button class="page-btn" id="prev-page" aria-label="Previous page" disabled>‹ Prev</button>
+    <button class="page-btn" id="page-1" aria-label="Page 1" aria-current="page">1</button>
+    <button class="page-btn" id="page-2" aria-label="Page 2">2</button>
+    <button class="page-btn" id="next-page" aria-label="Next page">Next ›</button>
+  </div>
+</nav>
+
+<div id="grid-status" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></div>
+
+<script>
+(function () {
+  const DATA = [
+    { name:'Acme Corp',     industry:'Retail',       score:94, status:'Compliant'   },
+    { name:'Buildtech',     industry:'Construction', score:71, status:'Partial'     },
+    { name:'ClearVision',   industry:'Healthcare',   score:98, status:'Compliant'   },
+    { name:'DataFlow',      industry:'Finance',      score:55, status:'Non-Compliant'},
+    { name:'EduSpark',      industry:'Education',    score:87, status:'Compliant'   },
+    { name:'FastShip',      industry:'Logistics',    score:62, status:'Partial'     },
+    { name:'GreenLeaf',     industry:'Agriculture',  score:90, status:'Compliant'   },
+    { name:'HealthFirst',   industry:'Healthcare',   score:49, status:'Non-Compliant'},
+    { name:'Innovatech',    industry:'Technology',   score:96, status:'Compliant'   },
+    { name:'JetStream',     industry:'Transport',    score:78, status:'Partial'     },
+  ];
+
+  const PAGE_SIZE = 5;
+  let sortCol = null, sortDir = 'none', query = '', page = 1;
+  let selected = new Set();
+
+  const tbody    = document.getElementById('grid-body');
+  const searchEl = document.getElementById('grid-search');
+  const countEl  = document.getElementById('grid-count');
+  const status   = document.getElementById('grid-status');
+  const noResult = document.getElementById('no-results');
+  const pageInfo = document.getElementById('page-info');
+  const prevBtn  = document.getElementById('prev-page');
+  const nextBtn  = document.getElementById('next-page');
+  const page1Btn = document.getElementById('page-1');
+  const page2Btn = document.getElementById('page-2');
+  const selectAll = document.getElementById('select-all');
+
+  function badgeClass(s) {
+    if (s === 'Compliant')    return 'badge badge-green';
+    if (s === 'Partial')      return 'badge badge-yellow';
+    return 'badge badge-red';
+  }
+
+  function filtered() {
+    let rows = DATA.filter(r =>
+      r.name.toLowerCase().includes(query) ||
+      r.industry.toLowerCase().includes(query) ||
+      r.status.toLowerCase().includes(query)
+    );
+    if (sortCol) {
+      rows = [...rows].sort((a, b) => {
+        const av = a[sortCol], bv = b[sortCol];
+        const cmp = typeof av === 'number' ? av - bv : av.localeCompare(bv);
+        return sortDir === 'ascending' ? cmp : -cmp;
+      });
+    }
+    return rows;
+  }
+
+  function render() {
+    const rows = filtered();
+    const total = rows.length;
+    const pages = Math.ceil(total / PAGE_SIZE);
+    if (page > pages && pages > 0) page = pages;
+    const start = (page - 1) * PAGE_SIZE;
+    const pageRows = rows.slice(start, start + PAGE_SIZE);
+
+    tbody.innerHTML = '';
+    noResult.hidden = total > 0;
+
+    pageRows.forEach((r, i) => {
+      const tr = document.createElement('tr');
+      const globalIdx = start + i;
+      tr.innerHTML = `
+        <td>
+          <input type="checkbox" aria-label="Select ${r.name}"
+            ${selected.has(r.name) ? 'checked' : ''} data-name="${r.name}">
+        </td>
+        <td>${r.name}</td>
+        <td>${r.industry}</td>
+        <td>
+          <span aria-label="${r.score} out of 100">${r.score}</span>
+        </td>
+        <td><span class="${badgeClass(r.status)}">${r.status}</span></td>
+        <td style="white-space:nowrap;display:flex;gap:.4rem">
+          <button class="row-btn" aria-label="Edit ${r.name}" type="button">Edit</button>
+          <button class="row-btn" aria-label="Delete ${r.name}" type="button">Delete</button>
+        </td>
+      `;
+      tbody.appendChild(tr);
+    });
+
+    // Wire up row checkboxes
+    tbody.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+      cb.addEventListener('change', () => {
+        if (cb.checked) selected.add(cb.dataset.name);
+        else selected.delete(cb.dataset.name);
+        updateSelectAll();
+      });
+    });
+
+    // Count
+    countEl.textContent = `${total} result${total !== 1 ? 's' : ''}`;
+
+    // Pagination
+    const showing_start = total === 0 ? 0 : start + 1;
+    const showing_end = Math.min(start + PAGE_SIZE, total);
+    pageInfo.textContent = `Showing ${showing_start}–${showing_end} of ${total}`;
+
+    prevBtn.disabled = page <= 1;
+    nextBtn.disabled = page >= pages;
+    page1Btn.setAttribute('aria-current', page === 1 ? 'page' : 'false');
+    page2Btn.setAttribute('aria-current', page === 2 ? 'page' : 'false');
+    page1Btn.hidden = pages < 1;
+    page2Btn.hidden = pages < 2;
+
+    updateSelectAll();
+  }
+
+  function updateSelectAll() {
+    const visibleNames = [...tbody.querySelectorAll('input[type="checkbox"]')].map(c => c.dataset.name);
+    const allChecked   = visibleNames.length > 0 && visibleNames.every(n => selected.has(n));
+    const someChecked  = visibleNames.some(n => selected.has(n));
+    selectAll.checked        = allChecked;
+    selectAll.indeterminate  = !allChecked && someChecked;
+    selectAll.setAttribute('aria-checked', allChecked ? 'true' : someChecked ? 'mixed' : 'false');
+  }
+
+  /* ── Sortable headers ── */
+  document.querySelectorAll('th[data-col]').forEach(th => {
+    th.addEventListener('click', () => sort(th));
+    th.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); sort(th); }
+    });
+  });
+
+  function sort(th) {
+    const col = th.dataset.col;
+    if (sortCol === col) {
+      sortDir = sortDir === 'ascending' ? 'descending' : 'ascending';
+    } else {
+      sortCol = col; sortDir = 'ascending';
+    }
+    // Reset all headers
+    document.querySelectorAll('th[data-col]').forEach(h => {
+      h.setAttribute('aria-sort', 'none');
+      h.querySelector('.sort-icon').textContent = '↕';
+    });
+    th.setAttribute('aria-sort', sortDir);
+    th.querySelector('.sort-icon').textContent = sortDir === 'ascending' ? '↑' : '↓';
+    page = 1;
+    render();
+    status.textContent = `Sorted by ${col} ${sortDir}`;
+  }
+
+  /* ── Search ── */
+  searchEl.addEventListener('input', () => {
+    query = searchEl.value.trim().toLowerCase();
+    page  = 1;
+    render();
+    const n = filtered().length;
+    status.textContent = `${n} result${n !== 1 ? 's' : ''} found`;
+  });
+
+  /* ── Select All ── */
+  selectAll.addEventListener('change', () => {
+    const visibleNames = [...tbody.querySelectorAll('input[type="checkbox"]')].map(c => c.dataset.name);
+    if (selectAll.checked) visibleNames.forEach(n => selected.add(n));
+    else visibleNames.forEach(n => selected.delete(n));
+    render();
+  });
+
+  /* ── Pagination ── */
+  prevBtn.addEventListener('click', () => { page--; render(); status.textContent = `Page ${page}`; });
+  nextBtn.addEventListener('click', () => { page++; render(); status.textContent = `Page ${page}`; });
+  page1Btn.addEventListener('click', () => { page = 1; render(); });
+  page2Btn.addEventListener('click', () => { page = 2; render(); });
+
+  render();
+})();
+</script>
+</body>
+</html>

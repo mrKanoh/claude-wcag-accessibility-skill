@@ -1,0 +1,230 @@
+{
+  "skill_name": "wcag-accessibility",
+  "description": "Evaluates whether the skill correctly answers WCAG/a11y questions, generates proper ARIA code, explains standards accurately, and provides actionable guidance.",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "My modal dialog closes when I press Escape but screen readers don't announce it as a dialog. What's wrong? Here's the code:\n\n```html\n<div id=\"modal\" class=\"modal\" style=\"display:none\">\n  <h2>Confirm Delete</h2>\n  <p>Are you sure you want to delete this item?</p>\n  <button onclick=\"closeModal()\">Cancel</button>\n  <button onclick=\"deleteItem()\">Delete</button>\n</div>\n```",
+      "expected_output": "Should identify: missing role='dialog', aria-modal='true', aria-labelledby pointing to h2, focus management (focus should move into dialog on open and return on close), and explain the full corrected code with all ARIA attributes.",
+      "assertions": [
+        {
+          "name": "identifies_missing_role_dialog",
+          "description": "Response mentions role='dialog' is missing",
+          "type": "contains",
+          "value": "role=\"dialog\""
+        },
+        {
+          "name": "mentions_aria_modal",
+          "description": "Response mentions aria-modal='true'",
+          "type": "contains_any",
+          "value": ["aria-modal", "aria-modal=\"true\""]
+        },
+        {
+          "name": "mentions_focus_management",
+          "description": "Response addresses focus management (moving focus into/out of dialog)",
+          "type": "contains_any",
+          "value": ["focus", "focus management", "focus trap"]
+        },
+        {
+          "name": "mentions_aria_labelledby",
+          "description": "Response mentions aria-labelledby to associate heading",
+          "type": "contains_any",
+          "value": ["aria-labelledby", "aria-label"]
+        },
+        {
+          "name": "provides_fixed_code",
+          "description": "Response includes corrected HTML code",
+          "type": "contains",
+          "value": "role=\"dialog\""
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "What's the minimum color contrast ratio required for normal body text under WCAG 2.1 AA? My text is #6b7280 on #ffffff background. Does it pass?",
+      "expected_output": "Should state 4.5:1 for normal text at AA. Should calculate or estimate the contrast of #6b7280 on #ffffff (approximately 4.61:1 or similar — just above the AA threshold). Should confirm it passes AA but may note it's close to the boundary.",
+      "assertions": [
+        {
+          "name": "states_correct_ratio",
+          "description": "Response states 4.5:1 as the minimum for normal text AA",
+          "type": "contains",
+          "value": "4.5:1"
+        },
+        {
+          "name": "references_correct_sc",
+          "description": "References SC 1.4.3",
+          "type": "contains_any",
+          "value": ["1.4.3", "SC 1.4.3", "Success Criterion 1.4.3"]
+        },
+        {
+          "name": "evaluates_the_color",
+          "description": "Response evaluates #6b7280 on #ffffff",
+          "type": "contains_any",
+          "value": ["pass", "passes", "does pass", "4.6", "4.61", "4.5"]
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "I'm building a custom dropdown menu in React. Users should be able to open it with Enter or Space, navigate options with arrow keys, and close with Escape. What ARIA attributes and keyboard behavior do I need?",
+      "expected_output": "Should describe the listbox or menu pattern. Should mention: role='combobox' or role='button' + role='listbox'/role='menu', aria-expanded, aria-haspopup, aria-activedescendant or roving tabindex, keyboard: Enter/Space to open, Arrow keys to navigate, Escape to close, Home/End for first/last, and type-ahead optionally.",
+      "assertions": [
+        {
+          "name": "mentions_correct_role",
+          "description": "Mentions appropriate role (listbox, combobox, or menu)",
+          "type": "contains_any",
+          "value": ["listbox", "combobox", "menu", "menuitem"]
+        },
+        {
+          "name": "mentions_aria_expanded",
+          "description": "Mentions aria-expanded",
+          "type": "contains",
+          "value": "aria-expanded"
+        },
+        {
+          "name": "covers_keyboard_arrows",
+          "description": "Covers arrow key navigation",
+          "type": "contains_any",
+          "value": ["arrow", "ArrowDown", "ArrowUp", "arrow key"]
+        },
+        {
+          "name": "covers_escape",
+          "description": "Mentions Escape to close",
+          "type": "contains_any",
+          "value": ["Escape", "Esc"]
+        },
+        {
+          "name": "mentions_aria_haspopup",
+          "description": "Mentions aria-haspopup",
+          "type": "contains",
+          "value": "aria-haspopup"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "My company sells software to EU companies. Do we need to be WCAG compliant? What standard applies and by when?",
+      "expected_output": "Should mention: European Accessibility Act (EAA), EN 301 549, WCAG 2.1 AA, deadline of 28 June 2025 for private sector. Should clarify it applies to B2C digital products and services.",
+      "assertions": [
+        {
+          "name": "mentions_eaa",
+          "description": "Mentions European Accessibility Act or EAA",
+          "type": "contains_any",
+          "value": ["European Accessibility Act", "EAA"]
+        },
+        {
+          "name": "mentions_deadline",
+          "description": "Mentions the 2025 deadline",
+          "type": "contains_any",
+          "value": ["2025", "June 2025", "28 June"]
+        },
+        {
+          "name": "mentions_wcag_21_aa",
+          "description": "Mentions WCAG 2.1 AA as the referenced standard",
+          "type": "contains_any",
+          "value": ["WCAG 2.1", "EN 301 549", "WCAG 2.1 AA"]
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "I want to add axe-core to my Playwright tests in a Next.js project. Can you give me a working setup with example test code?",
+      "expected_output": "Should provide: npm install @axe-core/playwright, import checkA11y or AxeBuilder, a working test that navigates to a URL and runs axe, shows how to handle violations, ideally shows how to integrate into a CI check.",
+      "assertions": [
+        {
+          "name": "mentions_axe_playwright_package",
+          "description": "Mentions the @axe-core/playwright package",
+          "type": "contains_any",
+          "value": ["@axe-core/playwright", "axe-core/playwright"]
+        },
+        {
+          "name": "provides_code_example",
+          "description": "Provides actual code (contains test or it block)",
+          "type": "contains_any",
+          "value": ["test(", "it(", "describe(", "AxeBuilder", "checkA11y"]
+        },
+        {
+          "name": "mentions_violations",
+          "description": "Shows how to check or report violations",
+          "type": "contains_any",
+          "value": ["violations", "toHaveNoViolations", "expect", "results"]
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "How do I make my React Native app work with TalkBack on Android? I have a card component that shows an image, title, and price.",
+      "expected_output": "Should mention: accessible={true} to combine child elements, accessibilityLabel with combined text, accessibilityRole='button' if tappable, minimum touch target 48dp, accessibilityHint for non-obvious actions. Should provide code example.",
+      "assertions": [
+        {
+          "name": "mentions_accessible_prop",
+          "description": "Mentions accessible={true} to combine elements",
+          "type": "contains_any",
+          "value": ["accessible={true}", "accessible=", "accessible prop"]
+        },
+        {
+          "name": "mentions_accessibility_label",
+          "description": "Mentions accessibilityLabel",
+          "type": "contains",
+          "value": "accessibilityLabel"
+        },
+        {
+          "name": "mentions_talkback_or_android",
+          "description": "Addresses TalkBack specifically",
+          "type": "contains_any",
+          "value": ["TalkBack", "Android", "accessibilityRole"]
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "prompt": "What does WCAG 2.4.11 require? We just updated to WCAG 2.2 and I'm not sure what new criteria to check.",
+      "expected_output": "Should explain SC 2.4.11 Focus Not Obscured (Minimum) — that the focused element must not be entirely hidden by sticky/fixed content. Should also mention other new WCAG 2.2 criteria: 2.4.12, 2.4.13, 2.5.7, 2.5.8, 3.2.6, 3.3.7, 3.3.8, 3.3.9. Should note that 4.1.1 was made obsolete.",
+      "assertions": [
+        {
+          "name": "explains_2411_correctly",
+          "description": "Correctly explains 2.4.11 Focus Not Obscured",
+          "type": "contains_any",
+          "value": ["Focus Not Obscured", "not entirely hidden", "obscured", "sticky", "focus not obscured"]
+        },
+        {
+          "name": "mentions_other_new_criteria",
+          "description": "Mentions at least one other new WCAG 2.2 criterion",
+          "type": "contains_any",
+          "value": ["2.5.8", "2.5.7", "3.3.8", "3.3.7", "3.2.6", "Target Size", "Dragging"]
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "prompt": "My form validation shows errors in red text below each field, but a JAWS user told me they don't know the field has an error. How do I fix this?",
+      "expected_output": "Should recommend: aria-invalid='true' on the input, aria-describedby pointing to the error message element, role='alert' or aria-live='assertive' for dynamic errors shown after submission, don't rely on color alone (SC 1.4.1). Should provide code example.",
+      "assertions": [
+        {
+          "name": "mentions_aria_invalid",
+          "description": "Mentions aria-invalid",
+          "type": "contains",
+          "value": "aria-invalid"
+        },
+        {
+          "name": "mentions_aria_describedby",
+          "description": "Mentions aria-describedby to link error to input",
+          "type": "contains",
+          "value": "aria-describedby"
+        },
+        {
+          "name": "mentions_live_region_or_role_alert",
+          "description": "Mentions live region or role=alert for dynamic errors",
+          "type": "contains_any",
+          "value": ["role=\"alert\"", "aria-live", "live region", "role='alert'"]
+        },
+        {
+          "name": "mentions_color_alone",
+          "description": "Notes that color alone is insufficient (SC 1.4.1)",
+          "type": "contains_any",
+          "value": ["1.4.1", "color alone", "not just color", "icon", "text message"]
+        }
+      ]
+    }
+  ]
+}
